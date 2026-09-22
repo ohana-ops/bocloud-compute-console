@@ -1,51 +1,39 @@
-<p align="center">
-	<img alt="logo" src="https://oscimg.oschina.net/oscnet/up-b99b286755aef70355a7084753f89cdb7c9.png">
-</p>
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">RuoYi v3.6.8</h1>
-<h4 align="center">基于 Vue/Element UI 和 Spring Boot/Spring Cloud & Alibaba 前后端分离的分布式微服务架构</h4>
-<p align="center">
-	<a href="https://gitee.com/y_project/RuoYi-Cloud/stargazers"><img src="https://gitee.com/y_project/RuoYi-Cloud/badge/star.svg?theme=dark"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Cloud"><img src="https://img.shields.io/badge/RuoYi-v3.6.8-brightgreen.svg"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Cloud/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
-</p>
+<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">博云算力资源管理后台系统</h1>
+<h4 align="center">BoCloud Compute Console · 基于若依微服务框架二次开发的企业级算力资源管理平台</h4>
 
-## 平台简介
+## 项目简介
 
-若依是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
+博云算力资源管理后台系统，是基于 [RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud)（若依微服务框架 v3.6.8）二次开发的企业级算力资源管理平台。
 
-* 采用前后端分离的模式，微服务版本前端(基于 [RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue))。
-* 后端采用Spring Boot、Spring Cloud & Alibaba。
-* 注册中心、配置中心选型Nacos，权限认证使用Redis。
-* 流量控制框架选型Sentinel，分布式事务选型Seata。
-* 阿里云优惠券：[点我进入](http://aly.ruoyi.vip)，腾讯云优惠券：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
+系统面向算力运营场景，实现了算力资源（GPU 卡 / 国产加速卡 / 计算节点 / CPU 资源）的统一纳管、资源申请、审批分配、使用统计等核心业务流程，支持多角色权限控制与全链路操作审计。
 
-# 版本分支
+> 技术底座采用若依微服务架构，业务层新增 `ruoyi-bocompute` 微服务模块，复用若依自带的用户、角色、菜单、字典、日志等系统能力。
 
-RuoYi-Cloud 后端项目提供 Spring Boot 2.x / 3.x / 4.x 多版本分支的并行维护。
+## 技术栈
 
-| 名称              | 说明                                 | 地址                                                      |
-| :---------------- | :----------------------------------- | :-------------------------------------------------------- |
-| master 默认分支   | Spring Boot 4.x (JDK 17+、Nacos 3.x) | https://gitee.com/y_project/RuoYi-Cloud                   |
-| springboot3 分支  | Spring Boot 3.x (JDK 17+、Nacos 3.x) | https://gitee.com/y_project/RuoYi-Cloud/tree/springboot3  |
-| springboot2 分支  | Spring Boot 2.x (JDK 8+、 Nacos 2.x) | https://gitee.com/y_project/RuoYi-Cloud/tree/springboot2  |
-
-RuoYi-Cloud 前端项目提供 Vue 2.x / 3.x / JavaScript TypeScript 版本均可混用搭配
-
-| 项目名称      | **RuoYi-Cloud** | **RuoYi-Cloud-Vue3** | **RuoYi-Cloud-Vue3-TypeScript**   |
-| :---          | :---            | :---                 | :---                              |
-| **前端框架**  | Vue 2           | Vue 3                | Vue 3                             |
-| **脚本语言**  | JavaScript      | JavaScript           | TypeScript                        |
-| **构建工具**  | Vue CLI         | Vite                 | Vite                              |
-| **UI 组件库** | Element UI      | Element Plus         | Element Plus                      |
-| **状态管理**  | Vuex            | Pinia                | Pinia                             |
-| **路由管理**  | Vue Router 3    | Vue Router 4         | Vue Router 4                      |
-| **核心特点**  | 1. 技术栈经典稳定<br>2. 社区资料丰富<br>3. 当前维护重心已转移 | 1. 现代前端技术栈<br>2. 开发体验与性能更优<br>3. 官方主推的活跃版本 | 1. 类型加持，减少沟通成本<br>2. 开发时有提示，效率更高<br>3. 多人协作企业级开发项目 |
-| **仓库地址**  | [RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud) | [RuoYi-Cloud-Vue3](https://gitcode.com/yangzongzhuan/RuoYi-Cloud-Vue3) | [RuoYi-Cloud-Vue3-TypeScript](https://gitcode.com/yangzongzhuan/RuoYi-Cloud-Vue3/tree/typescript) |
+| 分类 | 技术 | 版本 |
+| :--- | :--- | :--- |
+| 后端框架 | Spring Boot | 4.0.3 |
+| 微服务 | Spring Cloud / Spring Cloud Alibaba | 2025.1.0 / 2025.1.0.0 |
+| 注册/配置中心 | Nacos | 3.x |
+| 网关 | Spring Cloud Gateway | - |
+| 认证授权 | Spring Security + Redis Token | - |
+| ORM | MyBatis | 4.0.1 |
+| 数据库连接池 | Druid | 1.2.28 |
+| 分页 | PageHelper | 2.1.0 |
+| 缓存 | Redis | - |
+| 前端框架 | Vue | 2.6.12 |
+| UI 组件库 | Element UI | 2.15.14 |
+| 状态管理 | Vuex | 3.6.0 |
+| 路由管理 | Vue Router | 3.4.9 |
+| 图表 | ECharts | 5.4.0 |
+| 运行环境 | JDK | 17+ |
+| 数据库 | MySQL | 8.x |
 
 ## 系统模块
 
 ~~~
-com.ruoyi     
+com.ruoyi
 ├── ruoyi-ui              // 前端框架 [80]
 ├── ruoyi-gateway         // 网关模块 [8080]
 ├── ruoyi-auth            // 认证中心 [9200]
@@ -66,85 +54,131 @@ com.ruoyi
 │       └── ruoyi-gen                                 // 代码生成 [9202]
 │       └── ruoyi-job                                 // 定时任务 [9203]
 │       └── ruoyi-file                                // 文件服务 [9300]
+│       └── ruoyi-bocompute                           // 算力资源管理 [9400]
 ├── ruoyi-visual          // 图形化管理模块
 │       └── ruoyi-visual-monitor                      // 监控中心 [9100]
-├──pom.xml                // 公共依赖
+├── pom.xml               // 公共依赖
 ~~~
-
-## 架构图
-
-<img src="https://oscimg.oschina.net/oscnet/up-82e9722ecb846786405a904bafcf19f73f3.png"/>
 
 ## 内置功能
 
-1.  用户管理：用户是系统操作者，该功能主要完成系统用户配置。
-2.  部门管理：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。
-3.  岗位管理：配置系统用户所属担任职务。
-4.  菜单管理：配置系统菜单，操作权限，按钮权限标识等。
-5.  角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
-6.  字典管理：对系统中经常使用的一些较为固定的数据进行维护。
-7.  参数管理：对系统动态配置常用参数。
-8.  通知公告：系统通知公告信息发布维护。
-9.  操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-10. 登录日志：系统登录日志记录查询包含登录异常。
-11. 在线用户：当前系统中活跃用户状态监控。
-12. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
-13. 代码生成：前后端代码的生成（java、html、xml、sql）支持CRUD下载 。
-14. 系统接口：根据业务代码自动生成相关的api接口文档。
-15. 服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
-16. 在线构建器：拖动表单元素生成相应的HTML代码。
-17. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
+### 系统基础功能（复用若依原生）
 
-## 在线体验
+1. 用户管理：系统操作用户的配置与维护。
+2. 部门管理：树形组织机构配置，支持数据权限隔离。
+3. 岗位管理：配置用户所属职务。
+4. 菜单管理：配置系统菜单、操作权限、按钮权限标识。
+5. 角色管理：角色菜单权限分配、数据范围权限划分。
+6. 字典管理：维护系统常用固定数据。
+7. 参数管理：系统动态配置参数。
+8. 通知公告：系统公告信息发布维护。
+9. 操作日志：系统操作日志记录与查询。
+10. 登录日志：登录日志记录与异常查询。
+11. 定时任务：任务调度与执行日志。
+12. 代码生成：前后端代码一键生成。
+13. 系统接口：Swagger 接口文档自动生成。
+14. 服务监控：系统 CPU、内存、磁盘等监控。
 
-- admin/admin123  
-- 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
+### 算力资源管理（二次开发新增业务）
 
-演示地址：http://ruoyi.vip  
-文档地址：http://doc.ruoyi.vip
+| 功能模块 | 说明 |
+| :--- | :--- |
+| 算力资源列表 | 算力资源的增删改查、上下架，维护资源类型、规格、总/可用/已用数量 |
+| 我的申请 | 用户提交资源申请（选择资源、数量、用途、使用时间段），查看单据状态 |
+| 申请审批 | 管理员查看待审批申请，通过/驳回（填审批意见），通过后自动占用资源 |
+| 资源分配记录 | 展示资源分配详情（分配给谁、数量、时间），支持资源释放 |
+| 统计看板 | 资源总数、已用、待审批、本月申请等统计指标与资源占用率可视化 |
 
-## 演示图
+## 核心业务设计
 
-<table>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/cd1f90be5f2684f4560c9519c0f2a232ee8.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/1cbcf0e6f257c7d3a063c0e3f2ff989e4b3.jpg"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8074972883b5ba0622e13246738ebba237a.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-9f88719cdfca9af2e58b352a20e23d43b12.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-39bf2584ec3a529b0d5a3b70d15c9b37646.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-4148b24f58660a9dc347761e4cf6162f28f.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-b2d62ceb95d2dd9b3fbe157bb70d26001e9.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d67451d308b7a79ad6819723396f7c3d77a.png"/></td>
-    </tr>	 
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/5e8c387724954459291aafd5eb52b456f53.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/644e78da53c2e92a95dfda4f76e6d117c4b.jpg"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8370a0d02977eebf6dbf854c8450293c937.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-49003ed83f60f633e7153609a53a2b644f7.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d4fe726319ece268d4746602c39cffc0621.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-c195234bbcd30be6927f037a6755e6ab69c.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-ece3fd37a3d4bb75a3926e905a3c5629055.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-92ffb7f3835855cff100fa0f754a6be0d99.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-ff9e3066561574aca73005c5730c6a41f15.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-5e4daac0bb59612c5038448acbcef235e3a.png"/></td>
-    </tr>
-</table>
+### 1. 审批状态流转
 
+```
+提交申请 ──> 待审批 ──> 已通过 ──> 已分配
+                │
+                ├──> 已驳回
+                └──> 已取消
+```
 
-## 若依微服务交流群
+### 2. 审批通过三步闭环（同一事务内）
 
-QQ群： [![加入QQ群](https://img.shields.io/badge/已满-42799195-blue.svg)](https://jq.qq.com/?_wv=1027&k=yqInfq0S) [![加入QQ群](https://img.shields.io/badge/已满-170157040-blue.svg)](https://jq.qq.com/?_wv=1027&k=Oy1mb3p8) [![加入QQ群](https://img.shields.io/badge/已满-130643120-blue.svg)](https://jq.qq.com/?_wv=1027&k=rvxkJtXK) [![加入QQ群](https://img.shields.io/badge/已满-225920371-blue.svg)](https://jq.qq.com/?_wv=1027&k=0Ck3PvTe) [![加入QQ群](https://img.shields.io/badge/已满-201705537-blue.svg)](https://jq.qq.com/?_wv=1027&k=FnHHP4TT) [![加入QQ群](https://img.shields.io/badge/已满-236543183-blue.svg)](https://jq.qq.com/?_wv=1027&k=qdT1Ojpz) [![加入QQ群](https://img.shields.io/badge/已满-213618602-blue.svg)](https://jq.qq.com/?_wv=1027&k=nw3OiyXs) [![加入QQ群](https://img.shields.io/badge/已满-148794840-blue.svg)](https://jq.qq.com/?_wv=1027&k=kiU5WDls) [![加入QQ群](https://img.shields.io/badge/已满-118752664-blue.svg)](https://jq.qq.com/?_wv=1027&k=MtBy6YfT) [![加入QQ群](https://img.shields.io/badge/已满-101038945-blue.svg)](https://jq.qq.com/?_wv=1027&k=FqImHgH2) [![加入QQ群](https://img.shields.io/badge/已满-128355254-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=G4jZ4EtdT50PhnMBudTnEwgonxkXOscJ&authKey=FkGHYfoTKlGE6wHdKdjH9bVoOgQjtLP9WM%2Fj7pqGY1msoqw9uxDiBo39E2mLgzYg&noverify=0&group_code=128355254) [![加入QQ群](https://img.shields.io/badge/已满-179219821-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=irnwcXhbLOQEv1g-TwGifjNTA_f4wZiA&authKey=4bpzEwhcUY%2FvsPDHvzYn6xfoS%2FtOArvZ%2BGXzfr7O0%2FEqLfkKA%2BuCDXlzHIFg8t93&noverify=0&group_code=179219821) [![加入QQ群](https://img.shields.io/badge/已满-158753145-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=lx1uEdEDuxeM7rUvF3qmlFdqKqdJ5Z-R&authKey=rgyPW9yhhh4IIURKVFa6NgP3qiqH04WAzrJ0trsgkr3pjzm6sKIOGyA58oOjoj%2FJ&noverify=0&group_code=158753145) [![加入QQ群](https://img.shields.io/badge/112869560-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Kuaw0Xdlw2Nlgn6s8h9elzuquHGxGObD&authKey=cSrQcWQ%2BzQZAFFrwxaR%2BbzcumX4WRduZnd1O6JO1dlclQMiu%2BKwxAy8t2JfNp67V&noverify=0&group_code=112869560) 点击按钮入群。
+```
+校验申请单状态 → 占用资源(扣减可用数量) → 更新申请单 → 生成分配记录
+```
+
+### 3. 防超卖设计
+
+资源占用不采用「先查询再判断再更新」，而是将校验条件写入 SQL 的 `where` 子句，实现并发安全：
+
+```sql
+update biz_resource
+set used_count = used_count + #{count},
+    available_count = available_count - #{count}
+where resource_id = #{resourceId}
+  and available_count >= #{count}
+```
+
+### 4. 资源释放回写
+
+分配记录释放时，自动回写资源表：可用数量 `+N`、已用数量 `-N`。
+
+## 数据库表设计
+
+| 表名 | 说明 |
+| :--- | :--- |
+| `biz_resource` | 算力资源表（GPU 卡 / 国产加速卡 / 计算节点 / CPU 资源） |
+| `biz_resource_apply` | 资源申请表（含状态机字段、审批信息） |
+| `biz_resource_alloc` | 资源分配记录表（记录分配给谁、数量、时间、释放） |
+
+业务字典（复用 `sys_dict_type` / `sys_dict_data`）：
+
+| 字典类型 | 说明 |
+| :--- | :--- |
+| `biz_resource_type` | 资源类型（GPU 卡 / 国产加速卡 / 计算节点 / CPU 资源） |
+| `biz_resource_status` | 资源状态（可用 / 停用 / 维护中） |
+| `biz_apply_status` | 申请状态（待审批 / 已通过 / 已驳回 / 已取消） |
+| `biz_alloc_status` | 分配状态（使用中 / 已释放） |
+
+## 快速启动
+
+### 环境要求
+
+- JDK 17+
+- Maven 3.8+
+- MySQL 8.x
+- Redis 5.x+
+- Nacos 3.x
+- Node.js（前端）
+
+### 初始化步骤
+
+1. 创建数据库并导入基础脚本 `sql/ry_20260417.sql`。
+2. 导入业务建表脚本 `sql/bocompute_20260922.sql`（业务表 + 字典 + 菜单）。
+3. 导入 Nacos 配置脚本 `sql/ry_config_20260311.sql`。
+4. 导入业务 Nacos 配置脚本 `sql/bocompute_config_20260922.sql`（新模块配置 + 网关路由）。
+
+### 后端启动
+
+按顺序启动以下服务：
+
+```
+nacos → redis → mysql → ruoyi-gateway → ruoyi-auth → ruoyi-system → ruoyi-bocompute
+```
+
+### 前端启动
+
+```bash
+cd ruoyi-ui
+npm install
+npm run dev
+```
+
+访问 `http://localhost:80`，默认账号 `admin` / `admin123`。
+
+## 接口文档
+
+各服务启动后，可通过网关访问 Swagger 接口文档：`http://localhost:8080/swagger-ui/index.html`。
+
+## 版权声明
+
+Copyright © 2026 BoCloud. All Rights Reserved.

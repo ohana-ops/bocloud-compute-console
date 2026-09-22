@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bocompute.mapper.BizResourceMapper">
+
+	<resultMap type="BizResource" id="BizResourceResult">
+		<id     property="resourceId"      column="resource_id"      />
+		<result property="resourceName"    column="resource_name"    />
+		<result property="resourceCode"    column="resource_code"    />
+		<result property="resourceType"    column="resource_type"    />
+		<result property="resourceSpec"    column="resource_spec"    />
+		<result property="clusterName"     column="cluster_name"     />
+		<result property="totalCount"      column="total_count"      />
+		<result property="usedCount"       column="used_count"       />
+		<result property="availableCount"  column="available_count"  />
+		<result property="unit"            column="unit"             />
+		<result property="status"          column="status"           />
+		<result property="delFlag"         column="del_flag"         />
+		<result property="createBy"        column="create_by"        />
+		<result property="createTime"      column="create_time"      />
+		<result property="updateBy"        column="update_by"        />
+		<result property="updateTime"      column="update_time"      />
+		<result property="remark"          column="remark"           />
+	</resultMap>
+
+	<sql id="selectBizResourceVo">
+        select resource_id, resource_name, resource_code, resource_type, resource_spec, cluster_name,
+               total_count, used_count, available_count, unit, status, del_flag,
+               create_by, create_time, update_by, update_time, remark
+		from biz_resource
+    </sql>
+
+	<select id="selectBizResourceList" parameterType="BizResource" resultMap="BizResourceResult">
+	    <include refid="selectBizResourceVo"/>
+		<where>
+			del_flag = '0'
+			<if test="resourceName != null and resourceName != ''">
+				AND resource_name like concat('%', #{resourceName}, '%')
+			</if>
+			<if test="resourceCode != null and resourceCode != ''">
+				AND resource_code like concat('%', #{resourceCode}, '%')
+			</if>
+			<if test="resourceType != null and resourceType != ''">
+				AND resource_type = #{resourceType}
+			</if>
+			<if test="clusterName != null and clusterName != ''">
+				AND cluster_name like concat('%', #{clusterName}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+		order by resource_id desc
+	</select>
+
+	<select id="selectBizResourceAll" resultMap="BizResourceResult">
+		<include refid="selectBizResourceVo"/>
+		where del_flag = '0' and status = '0'
+		order by resource_id desc
+	</select>
+
+	<select id="selectBizResourceById" parameterType="Long" resultMap="BizResourceResult">
+		<include refid="selectBizResourceVo"/>
+		where resource_id = #{resourceId}
+	</select>
+
+	<select id="checkResourceCodeUnique" parameterType="String" resultMap="BizResourceResult">
+		<include refid="selectBizResourceVo"/>
+		 where resource_code = #{resourceCode} and del_flag = '0' limit 1
+	</select>
+
+	<insert id="insertBizResource" parameterType="BizResource" useGeneratedKeys="true" keyProperty="resourceId">
+ 		insert into biz_resource(
+ 			<if test="resourceName != null and resourceName != ''">resource_name,</if>
+ 			<if test="resourceCode != null and resourceCode != ''">resource_code,</if>
+ 			<if test="resourceType != null and resourceType != ''">resource_type,</if>
+ 			<if test="resourceSpec != null">resource_spec,</if>
+ 			<if test="clusterName != null">cluster_name,</if>
+ 			<if test="totalCount != null">total_count,</if>
+ 			<if test="usedCount != null">used_count,</if>
+ 			<if test="availableCount != null">available_count,</if>
+ 			<if test="unit != null">unit,</if>
+ 			<if test="status != null and status != ''">status,</if>
+ 			<if test="remark != null">remark,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			create_time
+ 		)values(
+ 			<if test="resourceName != null and resourceName != ''">#{resourceName},</if>
+ 			<if test="resourceCode != null and resourceCode != ''">#{resourceCode},</if>
+ 			<if test="resourceType != null and resourceType != ''">#{resourceType},</if>
+ 			<if test="resourceSpec != null">#{resourceSpec},</if>
+ 			<if test="clusterName != null">#{clusterName},</if>
+ 			<if test="totalCount != null">#{totalCount},</if>
+ 			<if test="usedCount != null">#{usedCount},</if>
+ 			<if test="availableCount != null">#{availableCount},</if>
+ 			<if test="unit != null">#{unit},</if>
+ 			<if test="status != null and status != ''">#{status},</if>
+ 			<if test="remark != null">#{remark},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			sysdate()
+ 		)
+	</insert>
+
+	<update id="updateBizResource" parameterType="BizResource">
+ 		update biz_resource
+ 		<set>
+ 			<if test="resourceName != null and resourceName != ''">resource_name = #{resourceName},</if>
+ 			<if test="resourceCode != null and resourceCode != ''">resource_code = #{resourceCode},</if>
+ 			<if test="resourceType != null and resourceType != ''">resource_type = #{resourceType},</if>
+ 			<if test="resourceSpec != null">resource_spec = #{resourceSpec},</if>
+ 			<if test="clusterName != null">cluster_name = #{clusterName},</if>
+ 			<if test="totalCount != null">total_count = #{totalCount},</if>
+ 			<if test="usedCount != null">used_count = #{usedCount},</if>
+ 			<if test="availableCount != null">available_count = #{availableCount},</if>
+ 			<if test="unit != null">unit = #{unit},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where resource_id = #{resourceId}
+	</update>
+
+	<!-- 占用资源：核心防超卖逻辑，available_count >= count 作为更新条件，并发下由数据库行锁保证安全 -->
+	<update id="occupyResource">
+ 		update biz_resource
+ 		set used_count = used_count + #{count},
+ 			available_count = available_count - #{count},
+ 			update_time = sysdate()
+ 		where resource_id = #{resourceId}
+ 		  and del_flag = '0'
+ 		  and status = '0'
+ 		  and available_count &gt;= #{count}
+	</update>
+
+	<!-- 释放资源：可用数量加上释放数量，已分配数量减去释放数量 -->
+	<update id="releaseResource">
+ 		update biz_resource
+ 		set used_count = used_count - #{count},
+ 			available_count = available_count + #{count},
+ 			update_time = sysdate()
+ 		where resource_id = #{resourceId}
+ 		  and del_flag = '0'
+ 		  and used_count &gt;= #{count}
+	</update>
+
+	<!-- 逻辑删除，保留历史数据 -->
+	<update id="deleteBizResourceById" parameterType="Long">
+ 		update biz_resource set del_flag = '2' where resource_id = #{resourceId}
+	</update>
+
+	<!-- 逻辑批量删除 -->
+	<update id="deleteBizResourceByIds" parameterType="Long">
+ 		update biz_resource set del_flag = '2' where resource_id in
+ 		<foreach collection="array" item="resourceId" open="(" separator="," close=")">
+ 			#{resourceId}
+        </foreach>
+	</update>
+
+</mapper>

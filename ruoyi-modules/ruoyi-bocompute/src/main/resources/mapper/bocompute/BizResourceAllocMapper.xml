@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bocompute.mapper.BizResourceAllocMapper">
+
+	<resultMap type="BizResourceAlloc" id="BizResourceAllocResult">
+		<id     property="allocId"        column="alloc_id"        />
+		<result property="applyId"        column="apply_id"        />
+		<result property="applyNo"        column="apply_no"        />
+		<result property="resourceId"     column="resource_id"     />
+		<result property="resourceName"   column="resource_name"   />
+		<result property="allocCount"     column="alloc_count"     />
+		<result property="userId"         column="user_id"         />
+		<result property="userName"       column="user_name"       />
+		<result property="deptId"         column="dept_id"         />
+		<result property="deptName"       column="dept_name"       />
+		<result property="beginTime"      column="begin_time"      />
+		<result property="endTime"        column="end_time"        />
+		<result property="status"         column="status"          />
+		<result property="releaseTime"    column="release_time"    />
+		<result property="delFlag"        column="del_flag"        />
+		<result property="createBy"       column="create_by"       />
+		<result property="createTime"     column="create_time"     />
+		<result property="updateBy"       column="update_by"       />
+		<result property="updateTime"     column="update_time"     />
+		<result property="remark"         column="remark"          />
+	</resultMap>
+
+	<sql id="selectBizResourceAllocVo">
+        select alloc_id, apply_id, apply_no, resource_id, resource_name, alloc_count,
+               user_id, user_name, dept_id, dept_name, begin_time, end_time, status,
+               release_time, del_flag, create_by, create_time, update_by, update_time, remark
+		from biz_resource_alloc
+    </sql>
+
+	<select id="selectBizResourceAllocList" parameterType="BizResourceAlloc" resultMap="BizResourceAllocResult">
+	    <include refid="selectBizResourceAllocVo"/>
+		<where>
+			del_flag = '0'
+			<if test="applyNo != null and applyNo != ''">
+				AND apply_no like concat('%', #{applyNo}, '%')
+			</if>
+			<if test="resourceName != null and resourceName != ''">
+				AND resource_name like concat('%', #{resourceName}, '%')
+			</if>
+			<if test="resourceId != null">
+				AND resource_id = #{resourceId}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND user_name like concat('%', #{userName}, '%')
+			</if>
+			<if test="userId != null">
+				AND user_id = #{userId}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+		order by alloc_id desc
+	</select>
+
+	<select id="selectBizResourceAllocById" parameterType="Long" resultMap="BizResourceAllocResult">
+		<include refid="selectBizResourceAllocVo"/>
+		where alloc_id = #{allocId}
+	</select>
+
+	<select id="selectBizResourceAllocByApplyId" parameterType="Long" resultMap="BizResourceAllocResult">
+		<include refid="selectBizResourceAllocVo"/>
+		where apply_id = #{applyId} and del_flag = '0' limit 1
+	</select>
+
+	<insert id="insertBizResourceAlloc" parameterType="BizResourceAlloc" useGeneratedKeys="true" keyProperty="allocId">
+ 		insert into biz_resource_alloc(
+ 			<if test="applyId != null">apply_id,</if>
+ 			<if test="applyNo != null">apply_no,</if>
+ 			<if test="resourceId != null">resource_id,</if>
+ 			<if test="resourceName != null">resource_name,</if>
+ 			<if test="allocCount != null">alloc_count,</if>
+ 			<if test="userId != null">user_id,</if>
+ 			<if test="userName != null">user_name,</if>
+ 			<if test="deptId != null">dept_id,</if>
+ 			<if test="deptName != null">dept_name,</if>
+ 			<if test="beginTime != null">begin_time,</if>
+ 			<if test="endTime != null">end_time,</if>
+ 			<if test="status != null and status != ''">status,</if>
+ 			<if test="remark != null">remark,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			create_time
+ 		)values(
+ 			<if test="applyId != null">#{applyId},</if>
+ 			<if test="applyNo != null">#{applyNo},</if>
+ 			<if test="resourceId != null">#{resourceId},</if>
+ 			<if test="resourceName != null">#{resourceName},</if>
+ 			<if test="allocCount != null">#{allocCount},</if>
+ 			<if test="userId != null">#{userId},</if>
+ 			<if test="userName != null">#{userName},</if>
+ 			<if test="deptId != null">#{deptId},</if>
+ 			<if test="deptName != null">#{deptName},</if>
+ 			<if test="beginTime != null">#{beginTime},</if>
+ 			<if test="endTime != null">#{endTime},</if>
+ 			<if test="status != null and status != ''">#{status},</if>
+ 			<if test="remark != null">#{remark},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			sysdate()
+ 		)
+	</insert>
+
+	<update id="updateBizResourceAlloc" parameterType="BizResourceAlloc">
+ 		update biz_resource_alloc
+ 		<set>
+ 			<if test="applyId != null">apply_id = #{applyId},</if>
+ 			<if test="applyNo != null">apply_no = #{applyNo},</if>
+ 			<if test="resourceId != null">resource_id = #{resourceId},</if>
+ 			<if test="resourceName != null">resource_name = #{resourceName},</if>
+ 			<if test="allocCount != null">alloc_count = #{allocCount},</if>
+ 			<if test="userId != null">user_id = #{userId},</if>
+ 			<if test="userName != null">user_name = #{userName},</if>
+ 			<if test="deptId != null">dept_id = #{deptId},</if>
+ 			<if test="deptName != null">dept_name = #{deptName},</if>
+ 			<if test="beginTime != null">begin_time = #{beginTime},</if>
+ 			<if test="endTime != null">end_time = #{endTime},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="releaseTime != null">release_time = #{releaseTime},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where alloc_id = #{allocId}
+	</update>
+
+	<!-- 逻辑删除，保留历史数据 -->
+	<update id="deleteBizResourceAllocById" parameterType="Long">
+ 		update biz_resource_alloc set del_flag = '2' where alloc_id = #{allocId}
+	</update>
+
+	<!-- 逻辑批量删除 -->
+	<update id="deleteBizResourceAllocByIds" parameterType="Long">
+ 		update biz_resource_alloc set del_flag = '2' where alloc_id in
+ 		<foreach collection="array" item="allocId" open="(" separator="," close=")">
+ 			#{allocId}
+        </foreach>
+	</update>
+
+</mapper>
