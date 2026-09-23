@@ -19,6 +19,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="endTime"        column="end_time"        />
 		<result property="status"         column="status"          />
 		<result property="releaseTime"    column="release_time"    />
+		<result property="deviceCodes"    column="device_codes"    />
+		<result property="nodeNames"      column="node_names"      />
+		<result property="scheduleType"   column="schedule_type"   />
+		<result property="scheduleMsg"    column="schedule_msg"    />
 		<result property="delFlag"        column="del_flag"        />
 		<result property="createBy"       column="create_by"       />
 		<result property="createTime"     column="create_time"     />
@@ -30,7 +34,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<sql id="selectBizResourceAllocVo">
         select alloc_id, apply_id, apply_no, resource_id, resource_name, alloc_count,
                user_id, user_name, dept_id, dept_name, begin_time, end_time, status,
-               release_time, del_flag, create_by, create_time, update_by, update_time, remark
+               release_time, device_codes, node_names, schedule_type, schedule_msg,
+               del_flag, create_by, create_time, update_by, update_time, remark
 		from biz_resource_alloc
     </sql>
 
@@ -70,6 +75,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where apply_id = #{applyId} and del_flag = '0' limit 1
 	</select>
 
+	<!-- 到期自动释放：查询使用中的、已过结束时间的分配单 -->
+	<select id="selectExpireAllocList" resultMap="BizResourceAllocResult">
+		<include refid="selectBizResourceAllocVo"/>
+		where del_flag = '0'
+		  and status = '0'
+		  and end_time is not null
+		  and end_time &lt; sysdate()
+		order by alloc_id asc
+	</select>
+
 	<insert id="insertBizResourceAlloc" parameterType="BizResourceAlloc" useGeneratedKeys="true" keyProperty="allocId">
  		insert into biz_resource_alloc(
  			<if test="applyId != null">apply_id,</if>
@@ -84,6 +99,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="beginTime != null">begin_time,</if>
  			<if test="endTime != null">end_time,</if>
  			<if test="status != null and status != ''">status,</if>
+ 			<if test="deviceCodes != null">device_codes,</if>
+ 			<if test="nodeNames != null">node_names,</if>
+ 			<if test="scheduleType != null">schedule_type,</if>
+ 			<if test="scheduleMsg != null">schedule_msg,</if>
  			<if test="remark != null">remark,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
  			create_time
@@ -100,6 +119,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="beginTime != null">#{beginTime},</if>
  			<if test="endTime != null">#{endTime},</if>
  			<if test="status != null and status != ''">#{status},</if>
+ 			<if test="deviceCodes != null">#{deviceCodes},</if>
+ 			<if test="nodeNames != null">#{nodeNames},</if>
+ 			<if test="scheduleType != null">#{scheduleType},</if>
+ 			<if test="scheduleMsg != null">#{scheduleMsg},</if>
  			<if test="remark != null">#{remark},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
  			sysdate()
@@ -122,6 +145,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="endTime != null">end_time = #{endTime},</if>
  			<if test="status != null and status != ''">status = #{status},</if>
  			<if test="releaseTime != null">release_time = #{releaseTime},</if>
+ 			<if test="deviceCodes != null">device_codes = #{deviceCodes},</if>
+ 			<if test="nodeNames != null">node_names = #{nodeNames},</if>
+ 			<if test="scheduleType != null">schedule_type = #{scheduleType},</if>
+ 			<if test="scheduleMsg != null">schedule_msg = #{scheduleMsg},</if>
  			<if test="remark != null">remark = #{remark},</if>
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
  			update_time = sysdate()

@@ -63,6 +63,21 @@
       <el-table-column label="申请单号" align="center" prop="applyNo" width="180" />
       <el-table-column label="资源名称" align="center" prop="resourceName" :show-overflow-tooltip="true" />
       <el-table-column label="分配数量" align="center" prop="allocCount" width="90" />
+      <el-table-column label="绑定设备" align="center" prop="deviceCodes" min-width="180">
+        <template slot-scope="scope">
+          <!-- 卡号较多时只展示摘要，点击「查看设备」弹窗列出每张卡及其所在节点 -->
+          <el-tooltip v-if="scope.row.deviceCodes" effect="dark" placement="top">
+            <div slot="content" style="max-width: 420px; line-height: 1.8;">{{ scope.row.deviceCodes }}</div>
+            <span class="device-code-ellipsis">{{ scope.row.deviceCodes }}</span>
+          </el-tooltip>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="调度说明" align="center" prop="scheduleMsg" min-width="160" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span>{{ scope.row.scheduleMsg || '-' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="使用人" align="center" prop="userName" width="100" />
       <el-table-column label="使用部门" align="center" prop="deptName" width="120" />
       <el-table-column label="开始时间" align="center" prop="beginTime" width="160">
@@ -85,8 +100,15 @@
           <span>{{ parseTime(scope.row.releaseTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="100">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180">
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-view"
+            @click="handleViewDevice(scope.row)"
+            v-hasPermi="['bocompute:alloc:query']"
+          >查看设备</el-button>
           <el-button
             v-if="scope.row.status === '0'"
             size="mini"
@@ -95,7 +117,6 @@
             @click="handleRelease(scope.row)"
             v-hasPermi="['bocompute:alloc:release']"
           >释放</el-button>
-          <span v-else>-</span>
         </template>
       </el-table-column>
     </el-table>
@@ -108,11 +129,40 @@
       :limit.sync="queryParams.pageSize"
       @pagination="getList"
     />
+
+    <!-- 查看某次分配绑定的设备清单 -->
+    <el-dialog title="绑定设备清单" :visible.sync="deviceOpen" width="700px" append-to-body>
+      <el-table v-loading="deviceLoading" :data="deviceList" size="small" max-height="420">
+        <el-table-column label="设备编号" align="center" prop="deviceCode" :show-overflow-tooltip="true" />
+        <el-table-column label="所在节点" align="center" prop="nodeName" width="160" />
+        <el-table-column label="绑定时间" align="center" prop="bindTime" width="170">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.bindTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="释放时间" align="center" prop="releaseTime" width="170">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.releaseTime) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="绑定状态" align="center" prop="status" width="100">
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.status === '0' ? 'primary' : 'info'">
+              {{ scope.row.status === '0' ? '占用中' : '已释放' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="deviceOpen = false">关 闭</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { listAlloc, releaseAlloc } from "@/api/bocompute/alloc"
+import { listDeviceByAlloc } from "@/api/bocompute/device"
 
 export default {
   name: "BoComputeAlloc",
@@ -136,7 +186,13 @@ export default {
         resourceName: undefined,
         userName: undefined,
         status: undefined
-      }
+      },
+      // 是否显示绑定设备清单弹窗
+      deviceOpen: false,
+      // 绑定设备清单加载状态
+      deviceLoading: false,
+      // 某次分配绑定的设备清单
+      deviceList: []
     }
   },
   created() {
@@ -162,6 +218,18 @@ export default {
       this.resetForm("queryForm")
       this.handleQuery()
     },
+    /** 查看某次分配绑定的设备清单 */
+    handleViewDevice(row) {
+      this.deviceLoading = true
+      this.deviceOpen = true
+      this.deviceList = []
+      listDeviceByAlloc(row.allocId).then(response => {
+        this.deviceList = response.data || []
+        this.deviceLoading = false
+      }).catch(() => {
+        this.deviceLoading = false
+      })
+    },
     /** 释放资源操作 */
     handleRelease(row) {
       this.$modal.confirm('是否确认释放资源"' + row.resourceName + '"共' + row.allocCount + '个？').then(function() {
@@ -180,3 +248,14 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+/* 绑定设备列单行省略，完整内容通过 tooltip 或查看设备弹窗展示 */
+.device-code-ellipsis {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #409EFF;
+}
+</style>

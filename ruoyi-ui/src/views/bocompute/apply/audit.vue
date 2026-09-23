@@ -291,6 +291,18 @@ export default {
             this.$modal.msgSuccess(this.auditType === "pass" ? "审批通过成功" : "审批驳回成功")
             this.open = false
             this.getList()
+          }).catch(error => {
+            // 审批通过时若调度失败（空闲设备不足、K8s 调度器未接入等），
+            // 后端 msg 已由全局响应拦截器弹出，这里补充一条可关闭的详细提示并刷新列表
+            if (this.auditType === "pass") {
+              const reason = (error && error.message) || "未知原因"
+              this.$notify.error({
+                title: "审批通过失败",
+                message: "调度未成功，申请单保持待审批。原因：" + reason,
+                duration: 0
+              })
+            }
+            this.getList()
           })
         }
       })

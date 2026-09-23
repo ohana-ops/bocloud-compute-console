@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.bocompute.domain.BizResource;
+import com.ruoyi.bocompute.service.IBizDeviceService;
 import com.ruoyi.bocompute.service.IBizResourceApplyService;
 import com.ruoyi.bocompute.service.IBizResourceService;
 
@@ -28,9 +29,12 @@ public class BizDashboardController extends BaseController
     @Autowired
     private IBizResourceApplyService bizResourceApplyService;
 
+    @Autowired
+    private IBizDeviceService bizDeviceService;
+
     /**
      * 获取看板统计数据
-     * 包含：资源总数、已分配总数、可用总数、待审批申请数、本月申请数
+     * 包含：资源总数、已分配总数、可用总数、待审批申请数、本月申请数、设备状态分布
      *
      * @return 统计结果
      */
@@ -69,6 +73,8 @@ public class BizDashboardController extends BaseController
         data.put("monthApplyCount", bizResourceApplyService.countCurrentMonthApply());
         // 各资源占用明细，用于图表展示
         data.put("resources", resourceList);
+        // 设备维度统计：设备总数、空闲、已分配、故障、维护
+        data.put("devices", bizDeviceService.selectDeviceStatusStatistics());
         return success(data);
     }
 }

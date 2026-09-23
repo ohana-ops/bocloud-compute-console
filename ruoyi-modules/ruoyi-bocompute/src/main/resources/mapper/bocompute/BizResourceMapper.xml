@@ -145,6 +145,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  		  and used_count &gt;= #{count}
 	</update>
 
+	<!-- 按设备汇总回写库存：设备表是真相源，total 含故障与维护，used/available 只统计已分配与空闲 -->
+	<update id="syncResourceCount">
+ 		update biz_resource r
+ 		set r.total_count = (select count(1) from biz_device d where d.resource_id = r.resource_id and d.del_flag = '0'),
+ 			r.used_count = (select count(1) from biz_device d where d.resource_id = r.resource_id and d.del_flag = '0' and d.status = '1'),
+ 			r.available_count = (select count(1) from biz_device d where d.resource_id = r.resource_id and d.del_flag = '0' and d.status = '0'),
+ 			r.update_time = sysdate()
+ 		where r.resource_id = #{resourceId}
+	</update>
+
 	<!-- 逻辑删除，保留历史数据 -->
 	<update id="deleteBizResourceById" parameterType="Long">
  		update biz_resource set del_flag = '2' where resource_id = #{resourceId}

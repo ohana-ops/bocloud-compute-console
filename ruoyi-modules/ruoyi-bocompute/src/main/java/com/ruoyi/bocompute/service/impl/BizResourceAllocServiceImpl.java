@@ -8,9 +8,13 @@ import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.utils.DateUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
+import com.ruoyi.bocompute.domain.BizResource;
 import com.ruoyi.bocompute.domain.BizResourceAlloc;
+import com.ruoyi.bocompute.mapper.BizAllocDeviceMapper;
 import com.ruoyi.bocompute.mapper.BizResourceAllocMapper;
 import com.ruoyi.bocompute.mapper.BizResourceMapper;
+import com.ruoyi.bocompute.schedule.ComputeScheduler;
+import com.ruoyi.bocompute.schedule.DeviceCodeGenerator;
 import com.ruoyi.bocompute.service.IBizResourceAllocService;
 
 /**
@@ -32,6 +36,15 @@ public class BizResourceAllocServiceImpl implements IBizResourceAllocService
 
     @Autowired
     private BizResourceMapper bizResourceMapper;
+
+    @Autowired
+    private BizAllocDeviceMapper bizAllocDeviceMapper;
+
+    /**
+     * 调度器实现，由 bocompute.scheduler.type 配置装配（device-pool / k8s）
+     */
+    @Autowired(required = false)
+    private ComputeScheduler computeScheduler;
 
     /**
      * 查询资源分配记录信息集合
@@ -96,7 +109,7 @@ public class BizResourceAllocServiceImpl implements IBizResourceAllocService
     }
 
     /**
-     * 释放资源（回收已分配资源并回写资源可用数量）
+     * 释放资源（调度器还卡 → 绑定明细置为已释放 → 回写库存 → 分配单置为已释放）
      *
      * @param allocId 分配记录ID
      * @return 结果
@@ -115,15 +128,33 @@ public class BizResourceAllocServiceImpl implements IBizResourceAllocService
         {
             throw new ServiceException("该资源已释放，请勿重复操作");
         }
-        // 1、回写资源可用数量（可用 + 本次释放数量，已分配 - 本次释放数量）
-        bizResourceMapper.releaseResource(alloc.getResourceId(), alloc.getAllocCount());
-        // 2、更新分配记录状态为已释放，并记录释放时间
+        if (StringUtils.isNull(computeScheduler))
+        {
+            throw new ServiceException("未找到可用的调度器实现，请检查 bocompute.scheduler.type 配置");
+        }
+        Date now = DateUtils.getNowDate();
+        // 1、调度器把本次分配绑定的设备还回空闲
+        computeScheduler.release(allocId);
+        // 2、绑定明细置为已释放，并记录释放时间
+        bizAllocDeviceMapper.releaseBizAllocDeviceByAllocId(allocId, now);
+        // 3、回写库存：设备类按设备状态汇总，cpu 按数量回写
+        BizResource resource = bizResourceMapper.selectBizResourceById(alloc.getResourceId());
+        String resourceType = StringUtils.isNull(resource) ? "" : resource.getResourceType();
+        if (DeviceCodeGenerator.TYPE_CPU.equals(resourceType))
+        {
+            bizResourceMapper.releaseResource(alloc.getResourceId(), alloc.getAllocCount());
+        }
+        else
+        {
+            bizResourceMapper.syncResourceCount(alloc.getResourceId());
+        }
+        // 4、更新分配记录状态为已释放，并记录释放时间
         BizResourceAlloc update = new BizResourceAlloc();
         update.setAllocId(allocId);
         update.setStatus(STATUS_RELEASED);
-        update.setReleaseTime(DateUtils.getNowDate());
+        update.setReleaseTime(now);
         update.setUpdateBy(SecurityUtils.getUsername());
-        update.setUpdateTime(DateUtils.getNowDate());
+        update.setUpdateTime(now);
         return bizResourceAllocMapper.updateBizResourceAlloc(update);
     }
 }

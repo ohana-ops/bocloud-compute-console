@@ -77,6 +77,16 @@ public interface BizResourceMapper
     public int releaseResource(@Param("resourceId") Long resourceId, @Param("count") Integer count);
 
     /**
+     * 按设备汇总回写资源池库存（设备是真相源）
+     * total = 未删除设备数；used = 已分配设备数；available = 空闲设备数
+     * 故障、维护设备只计入 total
+     *
+     * @param resourceId 资源池ID
+     * @return 结果
+     */
+    public int syncResourceCount(Long resourceId);
+
+    /**
      * 批量删除算力资源信息
      * 
      * @param resourceIds 需要删除的资源ID

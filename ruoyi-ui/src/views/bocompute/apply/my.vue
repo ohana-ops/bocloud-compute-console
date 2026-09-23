@@ -208,6 +208,13 @@
         <el-descriptions-item label="审批时间">{{ parseTime(detail.auditTime) }}</el-descriptions-item>
         <el-descriptions-item label="申请用途" :span="2">{{ detail.purpose }}</el-descriptions-item>
         <el-descriptions-item label="审批意见" :span="2">{{ detail.auditOpinion }}</el-descriptions-item>
+        <!-- 已通过的申请单展示调度分配到的设备编号（CPU 类型无设备，不展示） -->
+        <el-descriptions-item v-if="detail.deviceCodes" label="绑定设备" :span="2">
+          <span class="device-code-text">{{ detail.deviceCodes }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item v-if="detail.nodeNames" label="涉及节点" :span="2">
+          {{ detail.nodeNames }}
+        </el-descriptions-item>
       </el-descriptions>
       <div slot="footer" class="dialog-footer">
         <el-button @click="detailOpen = false">关 闭</el-button>
@@ -215,6 +222,16 @@
     </el-dialog>
   </div>
 </template>
+
+<style scoped>
+/* 设备编号较长，详情里单独换行展示并弱化字号 */
+.device-code-text {
+  display: block;
+  line-height: 1.8;
+  word-break: break-all;
+  color: #409EFF;
+}
+</style>
 
 <script>
 import { listMyApply, getApply, addApply, cancelApply } from "@/api/bocompute/apply"

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bocompute.mapper.BizAllocDeviceMapper">
+
+	<resultMap type="BizAllocDevice" id="BizAllocDeviceResult">
+		<id     property="id"           column="id"           />
+		<result property="allocId"      column="alloc_id"     />
+		<result property="applyId"      column="apply_id"     />
+		<result property="deviceId"     column="device_id"    />
+		<result property="deviceCode"   column="device_code"  />
+		<result property="nodeName"     column="node_name"    />
+		<result property="resourceId"   column="resource_id"  />
+		<result property="bindTime"     column="bind_time"    />
+		<result property="releaseTime"  column="release_time" />
+		<result property="status"       column="status"       />
+	</resultMap>
+
+	<sql id="selectBizAllocDeviceVo">
+        select id, alloc_id, apply_id, device_id, device_code, node_name, resource_id,
+               bind_time, release_time, status
+		from biz_alloc_device
+    </sql>
+
+	<select id="selectBizAllocDeviceByAllocId" parameterType="Long" resultMap="BizAllocDeviceResult">
+		<include refid="selectBizAllocDeviceVo"/>
+		where alloc_id = #{allocId}
+		order by id asc
+	</select>
+
+	<select id="selectBizAllocDeviceByApplyId" parameterType="Long" resultMap="BizAllocDeviceResult">
+		<include refid="selectBizAllocDeviceVo"/>
+		where apply_id = #{applyId}
+		order by id asc
+	</select>
+
+	<insert id="insertBizAllocDevice" parameterType="BizAllocDevice" useGeneratedKeys="true" keyProperty="id">
+ 		insert into biz_alloc_device(
+ 			alloc_id, apply_id, device_id, device_code, node_name, resource_id, bind_time, status
+ 		)values(
+ 			#{allocId}, #{applyId}, #{deviceId}, #{deviceCode}, #{nodeName}, #{resourceId}, sysdate(), '0'
+ 		)
+	</insert>
+
+	<insert id="batchInsertBizAllocDevice" parameterType="java.util.List">
+ 		insert into biz_alloc_device(
+ 			alloc_id, apply_id, device_id, device_code, node_name, resource_id, bind_time, status
+ 		)values
+ 		<foreach collection="list" item="item" separator=",">
+ 			(#{item.allocId}, #{item.applyId}, #{item.deviceId}, #{item.deviceCode}, #{item.nodeName}, #{item.resourceId}, sysdate(), '0')
+ 		</foreach>
+	</insert>
+
+	<!-- 释放：绑定状态置为已释放，并记录释放时间 -->
+	<update id="releaseBizAllocDeviceByAllocId">
+ 		update biz_alloc_device
+ 		set status = '1',
+ 			release_time = #{releaseTime}
+ 		where alloc_id = #{allocId}
+ 		  and status = '0'
+	</update>
+
+	<delete id="deleteBizAllocDeviceByAllocId" parameterType="Long">
+		delete from biz_alloc_device where alloc_id = #{allocId}
+	</delete>
+
+</mapper>

@@ -7,7 +7,9 @@ import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.bocompute.domain.BizResource;
+import com.ruoyi.bocompute.mapper.BizDeviceMapper;
 import com.ruoyi.bocompute.mapper.BizResourceMapper;
+import com.ruoyi.bocompute.schedule.DeviceCodeGenerator;
 import com.ruoyi.bocompute.service.IBizResourceService;
 
 /**
@@ -20,6 +22,9 @@ public class BizResourceServiceImpl implements IBizResourceService
 {
     @Autowired
     private BizResourceMapper bizResourceMapper;
+
+    @Autowired
+    private BizDeviceMapper bizDeviceMapper;
 
     /**
      * 查询算力资源信息集合
@@ -105,6 +110,14 @@ public class BizResourceServiceImpl implements IBizResourceService
     @Override
     public int updateBizResource(BizResource bizResource)
     {
+        // 走设备调度的资源类型，库存由设备状态汇总得出，禁止页面手改三个数量字段
+        BizResource oldResource = bizResourceMapper.selectBizResourceById(bizResource.getResourceId());
+        if (StringUtils.isNotNull(oldResource) && DeviceCodeGenerator.needDevice(oldResource.getResourceType()))
+        {
+            bizResource.setTotalCount(null);
+            bizResource.setUsedCount(null);
+            bizResource.setAvailableCount(null);
+        }
         // 修改总数量时，同步重算可用数量（可用 = 总数 - 已分配），并校验不能小于已分配数量
         if (StringUtils.isNotNull(bizResource.getTotalCount()))
         {
@@ -133,10 +146,19 @@ public class BizResourceServiceImpl implements IBizResourceService
         for (Long resourceId : resourceIds)
         {
             BizResource resource = bizResourceMapper.selectBizResourceById(resourceId);
-            if (StringUtils.isNotNull(resource) && StringUtils.isNotNull(resource.getUsedCount())
-                    && resource.getUsedCount() > 0)
+            if (StringUtils.isNull(resource))
+            {
+                continue;
+            }
+            if (StringUtils.isNotNull(resource.getUsedCount()) && resource.getUsedCount() > 0)
             {
                 throw new ServiceException(String.format("%1$s已分配,不能删除", resource.getResourceName()));
+            }
+            // 池下还有未删除的设备时禁止删池，避免设备变成孤儿数据
+            int deviceCount = bizDeviceMapper.countDeviceByResourceId(resourceId);
+            if (deviceCount > 0)
+            {
+                throw new ServiceException(String.format("%1$s下还有%2$s台设备,不能删除", resource.getResourceName(), deviceCount));
             }
         }
         return bizResourceMapper.deleteBizResourceByIds(resourceIds);

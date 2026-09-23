@@ -88,6 +88,12 @@ public class BizResourceApply extends BaseEntity
     @Excel(name = "审批意见")
     private String auditOpinion;
 
+    /** 绑定设备编号，逗号拼接（非表字段，由分配记录组装后返回，便于前端展示） */
+    private String deviceCodes;
+
+    /** 涉及的节点，逗号分隔（非表字段） */
+    private String nodeNames;
+
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
 
@@ -433,6 +439,46 @@ public class BizResourceApply extends BaseEntity
     public void setAuditOpinion(String auditOpinion)
     {
         this.auditOpinion = auditOpinion;
+    }
+
+    /**
+     * 获取绑定设备编号
+     *
+     * @return 绑定设备编号
+     */
+    public String getDeviceCodes()
+    {
+        return deviceCodes;
+    }
+
+    /**
+     * 设置绑定设备编号
+     *
+     * @param deviceCodes 绑定设备编号
+     */
+    public void setDeviceCodes(String deviceCodes)
+    {
+        this.deviceCodes = deviceCodes;
+    }
+
+    /**
+     * 获取涉及的节点
+     *
+     * @return 涉及的节点
+     */
+    public String getNodeNames()
+    {
+        return nodeNames;
+    }
+
+    /**
+     * 设置涉及的节点
+     *
+     * @param nodeNames 涉及的节点
+     */
+    public void setNodeNames(String nodeNames)
+    {
+        this.nodeNames = nodeNames;
     }
 
     /**

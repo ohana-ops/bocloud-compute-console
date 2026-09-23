@@ -1,0 +1,19 @@
+# 本地默认配置说明：
+# 本模块的主要配置在 Nacos 中维护（ruoyi-bocompute-dev.yml），此处只放置业务开关的本地默认值。
+# 若 Nacos 中也配置了 bocompute.* 节点，以 Nacos 为准（Nacos 配置优先级更高）。
+
+# 算力调度业务配置
+bocompute:
+  scheduler:
+    # 调度器实现：device-pool 设备池（默认） / k8s 预留实现
+    type: device-pool
+    # 到期分配单自动释放开关
+    auto-release-enabled: true
+
+# 定时任务线程池（到期扫描任务使用）
+spring:
+  task:
+    scheduling:
+      pool:
+        size: 2
+      thread-name-prefix: bocompute-schedule-

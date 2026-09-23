@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.bocompute.mapper.BizDeviceMapper">
+
+	<resultMap type="BizDevice" id="BizDeviceResult">
+		<id     property="deviceId"      column="device_id"      />
+		<result property="deviceCode"    column="device_code"    />
+		<result property="resourceId"    column="resource_id"    />
+		<result property="resourceName"  column="resource_name"  />
+		<result property="resourceType"  column="resource_type"  />
+		<result property="resourceSpec"  column="resource_spec"  />
+		<result property="clusterName"   column="cluster_name"   />
+		<result property="nodeName"      column="node_name"      />
+		<result property="slotIndex"     column="slot_index"     />
+		<result property="uuid"          column="uuid"           />
+		<result property="pciBus"        column="pci_bus"        />
+		<result property="status"        column="status"         />
+		<result property="allocId"       column="alloc_id"       />
+		<result property="applyNo"       column="apply_no"       />
+		<result property="userName"      column="user_name"      />
+		<result property="bindTime"      column="bind_time"      />
+		<result property="delFlag"       column="del_flag"       />
+		<result property="createBy"      column="create_by"      />
+		<result property="createTime"    column="create_time"    />
+		<result property="updateBy"      column="update_by"      />
+		<result property="updateTime"    column="update_time"    />
+		<result property="remark"        column="remark"         />
+	</resultMap>
+
+	<sql id="selectBizDeviceVo">
+        select d.device_id, d.device_code, d.resource_id, r.resource_name, d.resource_type, d.resource_spec,
+               d.cluster_name, d.node_name, d.slot_index, d.uuid, d.pci_bus, d.status, d.alloc_id,
+               d.apply_no, d.user_name, d.bind_time, d.del_flag,
+               d.create_by, d.create_time, d.update_by, d.update_time, d.remark
+		from biz_device d
+		left join biz_resource r on r.resource_id = d.resource_id
+    </sql>
+
+	<select id="selectBizDeviceList" parameterType="BizDevice" resultMap="BizDeviceResult">
+	    <include refid="selectBizDeviceVo"/>
+		<where>
+			d.del_flag = '0'
+			<if test="deviceCode != null and deviceCode != ''">
+				AND d.device_code like concat('%', #{deviceCode}, '%')
+			</if>
+			<if test="resourceId != null">
+				AND d.resource_id = #{resourceId}
+			</if>
+			<if test="resourceType != null and resourceType != ''">
+				AND d.resource_type = #{resourceType}
+			</if>
+			<if test="nodeName != null and nodeName != ''">
+				AND d.node_name like concat('%', #{nodeName}, '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND d.status = #{status}
+			</if>
+			<if test="userName != null and userName != ''">
+				AND d.user_name like concat('%', #{userName}, '%')
+			</if>
+			<if test="applyNo != null and applyNo != ''">
+				AND d.apply_no like concat('%', #{applyNo}, '%')
+			</if>
+		</where>
+		order by d.device_id asc
+	</select>
+
+	<select id="selectBizDeviceById" parameterType="Long" resultMap="BizDeviceResult">
+		<include refid="selectBizDeviceVo"/>
+		where d.device_id = #{deviceId}
+	</select>
+
+	<select id="checkDeviceCodeUnique" parameterType="String" resultMap="BizDeviceResult">
+		<include refid="selectBizDeviceVo"/>
+		 where d.device_code = #{deviceCode} and d.del_flag = '0' limit 1
+	</select>
+
+	<!-- 调度选卡：只取空闲设备，按节点、槽位升序，便于同节点优先（binpack） -->
+	<select id="selectIdleDevicesByResourceId" parameterType="Long" resultMap="BizDeviceResult">
+		<include refid="selectBizDeviceVo"/>
+		where d.resource_id = #{resourceId}
+		  and d.del_flag = '0'
+		  and d.status = '0'
+		order by d.node_name asc, d.slot_index asc
+	</select>
+
+	<select id="countDeviceByResourceId" parameterType="Long" resultType="int">
+		select count(1) from biz_device where resource_id = #{resourceId} and del_flag = '0'
+	</select>
+
+	<select id="countDeviceByStatus" resultType="int">
+		select count(1) from biz_device where del_flag = '0' and status = #{status}
+	</select>
+
+	<insert id="insertBizDevice" parameterType="BizDevice" useGeneratedKeys="true" keyProperty="deviceId">
+ 		insert into biz_device(
+ 			<if test="deviceCode != null and deviceCode != ''">device_code,</if>
+ 			<if test="resourceId != null">resource_id,</if>
+ 			<if test="resourceType != null and resourceType != ''">resource_type,</if>
+ 			<if test="resourceSpec != null">resource_spec,</if>
+ 			<if test="clusterName != null">cluster_name,</if>
+ 			<if test="nodeName != null and nodeName != ''">node_name,</if>
+ 			<if test="slotIndex != null">slot_index,</if>
+ 			<if test="uuid != null">uuid,</if>
+ 			<if test="pciBus != null">pci_bus,</if>
+ 			<if test="status != null and status != ''">status,</if>
+ 			<if test="remark != null">remark,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			create_time
+ 		)values(
+ 			<if test="deviceCode != null and deviceCode != ''">#{deviceCode},</if>
+ 			<if test="resourceId != null">#{resourceId},</if>
+ 			<if test="resourceType != null and resourceType != ''">#{resourceType},</if>
+ 			<if test="resourceSpec != null">#{resourceSpec},</if>
+ 			<if test="clusterName != null">#{clusterName},</if>
+ 			<if test="nodeName != null and nodeName != ''">#{nodeName},</if>
+ 			<if test="slotIndex != null">#{slotIndex},</if>
+ 			<if test="uuid != null">#{uuid},</if>
+ 			<if test="pciBus != null">#{pciBus},</if>
+ 			<if test="status != null and status != ''">#{status},</if>
+ 			<if test="remark != null">#{remark},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			sysdate()
+ 		)
+	</insert>
+
+	<update id="updateBizDevice" parameterType="BizDevice">
+ 		update biz_device
+ 		<set>
+ 			<if test="deviceCode != null and deviceCode != ''">device_code = #{deviceCode},</if>
+ 			<if test="resourceId != null">resource_id = #{resourceId},</if>
+ 			<if test="resourceType != null and resourceType != ''">resource_type = #{resourceType},</if>
+ 			<if test="resourceSpec != null">resource_spec = #{resourceSpec},</if>
+ 			<if test="clusterName != null">cluster_name = #{clusterName},</if>
+ 			<if test="nodeName != null and nodeName != ''">node_name = #{nodeName},</if>
+ 			<if test="slotIndex != null">slot_index = #{slotIndex},</if>
+ 			<if test="uuid != null">uuid = #{uuid},</if>
+ 			<if test="pciBus != null">pci_bus = #{pciBus},</if>
+ 			<if test="status != null and status != ''">status = #{status},</if>
+ 			<if test="allocId != null">alloc_id = #{allocId},</if>
+ 			<if test="applyNo != null">apply_no = #{applyNo},</if>
+ 			<if test="userName != null">user_name = #{userName},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where device_id = #{deviceId}
+	</update>
+
+	<!-- 锁定设备：核心防超卖逻辑，status = '0' 作为更新条件，并发下由数据库行锁保证只有一方成功 -->
+	<update id="lockDevicesByIds">
+ 		update biz_device
+ 		set status = '1',
+ 			alloc_id = #{allocId},
+ 			apply_no = #{applyNo},
+ 			user_name = #{userName},
+ 			bind_time = sysdate(),
+ 			update_time = sysdate()
+ 		where del_flag = '0'
+ 		  and status = '0'
+ 		  and device_id in
+ 		<foreach collection="deviceIds" item="deviceId" open="(" separator="," close=")">
+ 			#{deviceId}
+        </foreach>
+	</update>
+
+	<!-- 释放设备：状态回到空闲，清空绑定信息 -->
+	<update id="releaseDevicesByAllocId">
+ 		update biz_device
+ 		set status = '0',
+ 			alloc_id = null,
+ 			apply_no = '',
+ 			user_name = '',
+ 			bind_time = null,
+ 			update_time = sysdate()
+ 		where del_flag = '0'
+ 		  and alloc_id = #{allocId}
+	</update>
+
+	<!-- 设备运维状态变更：故障 / 维护 / 上线 -->
+	<update id="updateDeviceStatus">
+ 		update biz_device
+ 		set status = #{status},
+ 			update_by = #{updateBy},
+ 			update_time = sysdate()
+ 		where device_id = #{deviceId}
+	</update>
+
+	<!-- 逻辑删除，保留历史数据 -->
+	<update id="deleteBizDeviceById" parameterType="Long">
+ 		update biz_device set del_flag = '2' where device_id = #{deviceId}
+	</update>
+
+	<!-- 逻辑批量删除 -->
+	<update id="deleteBizDeviceByIds" parameterType="Long">
+ 		update biz_device set del_flag = '2' where device_id in
+ 		<foreach collection="array" item="deviceId" open="(" separator="," close=")">
+ 			#{deviceId}
+        </foreach>
+	</update>
+
+</mapper>

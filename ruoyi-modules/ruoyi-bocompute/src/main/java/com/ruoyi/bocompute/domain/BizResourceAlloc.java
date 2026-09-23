@@ -72,6 +72,22 @@ public class BizResourceAlloc extends BaseEntity
     @Excel(name = "释放时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date releaseTime;
 
+    /** 绑定设备编号，逗号拼接，列表展示用 */
+    @Excel(name = "绑定设备")
+    private String deviceCodes;
+
+    /** 涉及的节点，逗号分隔 */
+    @Excel(name = "涉及节点")
+    private String nodeNames;
+
+    /** 调度实现标识（device-pool/k8s） */
+    @Excel(name = "调度实现")
+    private String scheduleType;
+
+    /** 调度结果说明 */
+    @Excel(name = "调度说明")
+    private String scheduleMsg;
+
     /** 删除标志（0代表存在 2代表删除） */
     private String delFlag;
 
@@ -356,6 +372,86 @@ public class BizResourceAlloc extends BaseEntity
     }
 
     /**
+     * 获取绑定设备编号
+     *
+     * @return 绑定设备编号
+     */
+    public String getDeviceCodes()
+    {
+        return deviceCodes;
+    }
+
+    /**
+     * 设置绑定设备编号
+     *
+     * @param deviceCodes 绑定设备编号
+     */
+    public void setDeviceCodes(String deviceCodes)
+    {
+        this.deviceCodes = deviceCodes;
+    }
+
+    /**
+     * 获取涉及的节点
+     *
+     * @return 涉及的节点
+     */
+    public String getNodeNames()
+    {
+        return nodeNames;
+    }
+
+    /**
+     * 设置涉及的节点
+     *
+     * @param nodeNames 涉及的节点
+     */
+    public void setNodeNames(String nodeNames)
+    {
+        this.nodeNames = nodeNames;
+    }
+
+    /**
+     * 获取调度实现标识
+     *
+     * @return 调度实现标识
+     */
+    public String getScheduleType()
+    {
+        return scheduleType;
+    }
+
+    /**
+     * 设置调度实现标识
+     *
+     * @param scheduleType 调度实现标识
+     */
+    public void setScheduleType(String scheduleType)
+    {
+        this.scheduleType = scheduleType;
+    }
+
+    /**
+     * 获取调度结果说明
+     *
+     * @return 调度结果说明
+     */
+    public String getScheduleMsg()
+    {
+        return scheduleMsg;
+    }
+
+    /**
+     * 设置调度结果说明
+     *
+     * @param scheduleMsg 调度结果说明
+     */
+    public void setScheduleMsg(String scheduleMsg)
+    {
+        this.scheduleMsg = scheduleMsg;
+    }
+
+    /**
      * 获取删除标志
      *
      * @return 删除标志
@@ -397,6 +493,10 @@ public class BizResourceAlloc extends BaseEntity
             .append("endTime", getEndTime())
             .append("status", getStatus())
             .append("releaseTime", getReleaseTime())
+            .append("deviceCodes", getDeviceCodes())
+            .append("nodeNames", getNodeNames())
+            .append("scheduleType", getScheduleType())
+            .append("scheduleMsg", getScheduleMsg())
             .append("delFlag", getDelFlag())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

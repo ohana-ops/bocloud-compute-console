@@ -52,6 +52,39 @@
       </el-col>
     </el-row>
 
+    <!-- 设备维度统计 -->
+    <el-row :gutter="20" style="margin-top: 20px;">
+      <el-col :span="24">
+        <el-card shadow="hover">
+          <div slot="header">
+            <span>模拟设备池状态</span>
+          </div>
+          <div class="device-stat-wrapper">
+            <div class="device-stat-item">
+              <div class="device-stat-label">设备总数</div>
+              <div class="device-stat-value">{{ deviceStats.total }}</div>
+            </div>
+            <div class="device-stat-item">
+              <div class="device-stat-label">空闲</div>
+              <div class="device-stat-value" style="color: #67C23A;">{{ deviceStats.idle }}</div>
+            </div>
+            <div class="device-stat-item">
+              <div class="device-stat-label">已分配</div>
+              <div class="device-stat-value" style="color: #409EFF;">{{ deviceStats.allocated }}</div>
+            </div>
+            <div class="device-stat-item">
+              <div class="device-stat-label">故障</div>
+              <div class="device-stat-value" style="color: #F56C6C;">{{ deviceStats.fault }}</div>
+            </div>
+            <div class="device-stat-item">
+              <div class="device-stat-label">维护</div>
+              <div class="device-stat-value" style="color: #E6A23C;">{{ deviceStats.maintain }}</div>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
     <!-- 资源利用率 -->
     <el-row :gutter="20" style="margin-top: 20px;">
       <el-col :span="8">
@@ -121,6 +154,14 @@ export default {
         pendingApplyCount: 0,
         monthApplyCount: 0,
         resources: []
+      },
+      // 模拟设备池状态统计
+      deviceStats: {
+        total: 0,
+        idle: 0,
+        allocated: 0,
+        fault: 0,
+        maintain: 0
       }
     }
   },
@@ -138,6 +179,14 @@ export default {
     getStatisticsData() {
       getStatistics().then(response => {
         this.statistics = response.data
+        // 后端返回的设备维度统计，缺省时归零，避免页面渲染报错
+        this.deviceStats = Object.assign({
+          total: 0,
+          idle: 0,
+          allocated: 0,
+          fault: 0,
+          maintain: 0
+        }, response.data.devices || {})
       })
     },
     /** 计算单个资源的利用率（保留整数） */
@@ -216,5 +265,34 @@ export default {
   margin-top: 16px;
   font-size: 14px;
   color: #606266;
+}
+
+/* 设备状态概览：5 项等宽横向排列 */
+.device-stat-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.device-stat-item {
+  flex: 1;
+  text-align: center;
+  border-right: 1px solid #EBEEF5;
+}
+
+.device-stat-item:last-child {
+  border-right: none;
+}
+
+.device-stat-label {
+  font-size: 13px;
+  color: #909399;
+}
+
+.device-stat-value {
+  margin-top: 8px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #303133;
 }
 </style>

@@ -1,5 +1,6 @@
 package com.ruoyi.bocompute.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,19 @@ import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.system.api.domain.SysUser;
 import com.ruoyi.system.api.model.LoginUser;
+import com.ruoyi.bocompute.domain.BizAllocDevice;
+import com.ruoyi.bocompute.domain.BizDevice;
 import com.ruoyi.bocompute.domain.BizResource;
 import com.ruoyi.bocompute.domain.BizResourceAlloc;
 import com.ruoyi.bocompute.domain.BizResourceApply;
+import com.ruoyi.bocompute.mapper.BizAllocDeviceMapper;
 import com.ruoyi.bocompute.mapper.BizResourceAllocMapper;
 import com.ruoyi.bocompute.mapper.BizResourceApplyMapper;
 import com.ruoyi.bocompute.mapper.BizResourceMapper;
+import com.ruoyi.bocompute.schedule.ComputeScheduler;
+import com.ruoyi.bocompute.schedule.DeviceCodeGenerator;
+import com.ruoyi.bocompute.schedule.ScheduleRequest;
+import com.ruoyi.bocompute.schedule.ScheduleResult;
 import com.ruoyi.bocompute.service.IBizResourceApplyService;
 
 /**
@@ -48,6 +56,15 @@ public class BizResourceApplyServiceImpl implements IBizResourceApplyService
     @Autowired
     private BizResourceAllocMapper bizResourceAllocMapper;
 
+    @Autowired
+    private BizAllocDeviceMapper bizAllocDeviceMapper;
+
+    /**
+     * 调度器实现，由 bocompute.scheduler.type 配置装配（device-pool / k8s）
+     */
+    @Autowired(required = false)
+    private ComputeScheduler computeScheduler;
+
     /**
      * 查询资源申请信息集合
      * 
@@ -69,7 +86,18 @@ public class BizResourceApplyServiceImpl implements IBizResourceApplyService
     @Override
     public BizResourceApply selectBizResourceApplyById(Long applyId)
     {
-        return bizResourceApplyMapper.selectBizResourceApplyById(applyId);
+        BizResourceApply apply = bizResourceApplyMapper.selectBizResourceApplyById(applyId);
+        // 已通过的申请单，把分配记录上的设备编号组装回来，避免前端连打三个接口
+        if (StringUtils.isNotNull(apply) && STATUS_PASS.equals(apply.getStatus()))
+        {
+            BizResourceAlloc alloc = bizResourceAllocMapper.selectBizResourceAllocByApplyId(applyId);
+            if (StringUtils.isNotNull(alloc))
+            {
+                apply.setDeviceCodes(alloc.getDeviceCodes());
+                apply.setNodeNames(alloc.getNodeNames());
+            }
+        }
+        return apply;
     }
 
     /**
@@ -188,7 +216,10 @@ public class BizResourceApplyServiceImpl implements IBizResourceApplyService
     }
 
     /**
-     * 审批通过（占用资源并生成分配记录）
+     * 审批通过（插分配单 → 调度选卡锁卡 → 回写卡号 → 同步库存 → 单据通过）
+     *
+     * 全流程在同一事务内完成，任一步失败整单回滚，申请单保持待审批状态。
+     * 顺序上必须「先插分配单拿到 allocId，再调度锁设备」，禁止先把申请单改为已通过。
      *
      * @param applyId 申请单ID
      * @param auditOpinion 审批意见
@@ -208,23 +239,22 @@ public class BizResourceApplyServiceImpl implements IBizResourceApplyService
         {
             throw new ServiceException("该申请单已审批，请勿重复操作");
         }
-        // 1、占用资源数量（SQL 中带 available_count >= count 条件，防止并发超卖）
-        int rows = bizResourceMapper.occupyResource(apply.getResourceId(), apply.getApplyCount());
-        if (rows == 0)
+        // 1、校验资源存在且可用
+        BizResource resource = bizResourceMapper.selectBizResourceById(apply.getResourceId());
+        if (StringUtils.isNull(resource))
         {
-            throw new ServiceException("资源可用数量不足，审批失败");
+            throw new ServiceException("申请的资源不存在");
         }
-        // 2、更新申请单状态为已通过
-        BizResourceApply update = new BizResourceApply();
-        update.setApplyId(applyId);
-        update.setStatus(STATUS_PASS);
-        update.setAuditBy(SecurityUtils.getUsername());
-        update.setAuditTime(DateUtils.getNowDate());
-        update.setAuditOpinion(auditOpinion);
-        update.setUpdateBy(SecurityUtils.getUsername());
-        update.setUpdateTime(DateUtils.getNowDate());
-        bizResourceApplyMapper.updateBizResourceApply(update);
-        // 3、生成资源分配记录
+        if (!"0".equals(resource.getStatus()))
+        {
+            throw new ServiceException("申请的资源当前不可用，无法审批通过");
+        }
+        // 校验调度器实现是否已装配
+        if (StringUtils.isNull(computeScheduler))
+        {
+            throw new ServiceException("未找到可用的调度器实现，请检查 bocompute.scheduler.type 配置");
+        }
+        // 2、先插入分配单，拿到 allocId 后交给调度器锁设备
         BizResourceAlloc alloc = new BizResourceAlloc();
         alloc.setApplyId(applyId);
         alloc.setApplyNo(apply.getApplyNo());
@@ -241,7 +271,99 @@ public class BizResourceApplyServiceImpl implements IBizResourceApplyService
         alloc.setStatus("0");
         alloc.setCreateBy(SecurityUtils.getUsername());
         alloc.setCreateTime(DateUtils.getNowDate());
-        return bizResourceAllocMapper.insertBizResourceAlloc(alloc);
+        bizResourceAllocMapper.insertBizResourceAlloc(alloc);
+        // 3、调度选卡并锁定设备（无空闲设备、并发抢占、K8s 未接入都会在这里抛异常回滚）
+        ScheduleRequest request = new ScheduleRequest();
+        request.setApplyId(applyId);
+        request.setApplyNo(apply.getApplyNo());
+        request.setResourceId(apply.getResourceId());
+        request.setResourceType(apply.getResourceType());
+        request.setCount(apply.getApplyCount());
+        request.setUserId(apply.getApplyUserId());
+        request.setUserName(apply.getApplyUserName());
+        request.setBeginTime(apply.getBeginTime());
+        request.setEndTime(apply.getEndTime());
+        request.setAllocId(alloc.getAllocId());
+        ScheduleResult scheduleResult = computeScheduler.allocate(request);
+        // 4、写入分配单-设备绑定明细
+        saveAllocDevices(alloc, apply, scheduleResult.getDevices());
+        // 5、回写分配单的调度结果（卡号、节点、调度说明）
+        BizResourceAlloc allocUpdate = new BizResourceAlloc();
+        allocUpdate.setAllocId(alloc.getAllocId());
+        allocUpdate.setDeviceCodes(scheduleResult.getDeviceCodes());
+        allocUpdate.setNodeNames(scheduleResult.getNodeNames());
+        allocUpdate.setScheduleType(scheduleResult.getScheduleType());
+        allocUpdate.setScheduleMsg(scheduleResult.getMessage());
+        allocUpdate.setUpdateBy(SecurityUtils.getUsername());
+        bizResourceAllocMapper.updateBizResourceAlloc(allocUpdate);
+        // 6、回写资源池库存：设备类以设备状态为准，cpu 仍按数量扣减
+        syncResourceInventory(apply.getResourceType(), apply.getResourceId(), apply.getApplyCount());
+        // 7、申请单改为已通过，放在最后一步，保证调度失败时单据状态不变
+        BizResourceApply update = new BizResourceApply();
+        update.setApplyId(applyId);
+        update.setStatus(STATUS_PASS);
+        update.setAuditBy(SecurityUtils.getUsername());
+        update.setAuditTime(DateUtils.getNowDate());
+        update.setAuditOpinion(auditOpinion);
+        update.setUpdateBy(SecurityUtils.getUsername());
+        update.setUpdateTime(DateUtils.getNowDate());
+        return bizResourceApplyMapper.updateBizResourceApply(update);
+    }
+
+    /**
+     * 保存分配单-设备绑定明细
+     *
+     * @param alloc 分配单
+     * @param apply 申请单
+     * @param devices 调度选中的设备列表，cpu 类型为空
+     */
+    private void saveAllocDevices(BizResourceAlloc alloc, BizResourceApply apply, List<BizDevice> devices)
+    {
+        // cpu 等无设备场景不写绑定明细
+        if (StringUtils.isNull(devices) || devices.isEmpty())
+        {
+            return;
+        }
+        List<BizAllocDevice> list = new ArrayList<BizAllocDevice>();
+        Date now = DateUtils.getNowDate();
+        for (BizDevice device : devices)
+        {
+            BizAllocDevice allocDevice = new BizAllocDevice();
+            allocDevice.setAllocId(alloc.getAllocId());
+            allocDevice.setApplyId(apply.getApplyId());
+            allocDevice.setDeviceId(device.getDeviceId());
+            allocDevice.setDeviceCode(device.getDeviceCode());
+            allocDevice.setNodeName(device.getNodeName());
+            allocDevice.setResourceId(device.getResourceId());
+            allocDevice.setBindTime(now);
+            // 绑定记录初始为占用中
+            allocDevice.setStatus(BizAllocDevice.STATUS_USING);
+            list.add(allocDevice);
+        }
+        bizAllocDeviceMapper.batchInsertBizAllocDevice(list);
+    }
+
+    /**
+     * 回写资源池库存
+     * gpu/npu/node：设备是真相源，按设备状态汇总回写；
+     * cpu：没有设备，沿用数量扣减（SQL 带 available_count >= count 防超卖）。
+     *
+     * @param resourceType 资源类型
+     * @param resourceId 资源ID
+     * @param count 本次操作数量
+     */
+    private void syncResourceInventory(String resourceType, Long resourceId, Integer count)
+    {
+        if (DeviceCodeGenerator.TYPE_CPU.equals(resourceType))
+        {
+            int rows = bizResourceMapper.occupyResource(resourceId, count);
+            if (rows == 0)
+            {
+                throw new ServiceException("资源可用数量不足，审批失败");
+            }
+            return;
+        }
+        bizResourceMapper.syncResourceCount(resourceId);
     }
 
     /**

@@ -124,8 +124,17 @@
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="140">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="220">
         <template slot-scope="scope">
+          <!-- 走设备调度的资源类型可以跳转到设备台账查看具体卡号 -->
+          <el-button
+            v-if="scope.row.resourceType !== 'cpu'"
+            size="mini"
+            type="text"
+            icon="el-icon-cpu"
+            @click="handleViewDevice(scope.row)"
+            v-hasPermi="['bocompute:device:list']"
+          >查看设备</el-button>
           <el-button
             size="mini"
             type="text"
@@ -202,7 +211,16 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="资源总数量" prop="totalCount">
-              <el-input-number v-model="form.totalCount" controls-position="right" :min="0" style="width: 100%" />
+              <el-input-number
+                v-model="form.totalCount"
+                controls-position="right"
+                :min="0"
+                :disabled="isDeviceResource"
+                style="width: 100%"
+              />
+              <div v-if="isDeviceResource" class="form-tip">
+                设备类资源的数量由设备台账汇总，请到「设备台账」维护设备
+              </div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -283,6 +301,12 @@ export default {
           { required: true, message: "资源总数量不能为空", trigger: "blur" }
         ]
       }
+    }
+  },
+  computed: {
+    // 走设备调度的资源类型（gpu/npu/node），总数量由设备台账汇总，页面禁止手改
+    isDeviceResource() {
+      return !!this.form.resourceType && this.form.resourceType !== 'cpu'
     }
   },
   created() {
@@ -371,6 +395,10 @@ export default {
         }
       })
     },
+    /** 查看设备操作：跳转到设备台账并按资源池过滤 */
+    handleViewDevice(row) {
+      this.$router.push({ path: '/bocompute/device', query: { resourceId: row.resourceId } })
+    },
     /** 删除按钮操作 */
     handleDelete(row) {
       const resourceIds = row.resourceId || this.ids
@@ -390,3 +418,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+/* 表单项下方的灰色提示文案 */
+.form-tip {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #909399;
+}
+</style>
