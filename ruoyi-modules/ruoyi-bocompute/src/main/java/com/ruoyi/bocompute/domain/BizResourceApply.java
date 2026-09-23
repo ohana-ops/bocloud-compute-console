@@ -9,6 +9,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.annotation.Excel.ColumnType;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
@@ -16,11 +21,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * 
  * @author bocloud
  */
+@TableName("biz_resource_apply")
 public class BizResourceApply extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 申请单ID */
+    @TableId(value = "apply_id", type = IdType.AUTO)
     @Excel(name = "申请单ID", cellType = ColumnType.NUMERIC)
     private Long applyId;
 
@@ -89,12 +96,15 @@ public class BizResourceApply extends BaseEntity
     private String auditOpinion;
 
     /** 绑定设备编号，逗号拼接（非表字段，由分配记录组装后返回，便于前端展示） */
+    @TableField(exist = false)
     private String deviceCodes;
 
     /** 涉及的节点，逗号分隔（非表字段） */
+    @TableField(exist = false)
     private String nodeNames;
 
     /** 删除标志（0代表存在 2代表删除） */
+    @TableLogic(value = "0", delval = "2")
     private String delFlag;
 
     /**

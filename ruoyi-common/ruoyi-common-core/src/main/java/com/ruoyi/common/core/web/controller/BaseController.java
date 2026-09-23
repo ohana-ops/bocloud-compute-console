@@ -2,18 +2,14 @@ package com.ruoyi.common.core.web.controller;
 
 import java.beans.PropertyEditorSupport;
 import java.util.Date;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.constant.HttpStatus;
 import com.ruoyi.common.core.utils.DateUtils;
-import com.ruoyi.common.core.utils.PageUtils;
-import com.ruoyi.common.core.utils.StringUtils;
-import com.ruoyi.common.core.utils.sql.SqlUtil;
 import com.ruoyi.common.core.web.domain.AjaxResult;
 import com.ruoyi.common.core.web.page.PageDomain;
 import com.ruoyi.common.core.web.page.TableDataInfo;
@@ -46,45 +42,34 @@ public class BaseController
     }
 
     /**
-     * 设置请求分页数据
+     * 构建 MyBatis-Plus 分页对象，从请求参数读取 pageNum / pageSize
+     *
+     * @param <T> 分页对象的泛型类型
+     * @return MyBatis-Plus 分页对象
      */
-    protected void startPage()
-    {
-        PageUtils.startPage();
-    }
-
-    /**
-     * 设置请求排序数据
-     */
-    protected void startOrderBy()
+    protected <T> Page<T> getPage()
     {
         PageDomain pageDomain = TableSupport.buildPageRequest();
-        if (StringUtils.isNotEmpty(pageDomain.getOrderBy()))
-        {
-            String orderBy = SqlUtil.escapeOrderBySql(pageDomain.getOrderBy());
-            PageHelper.orderBy(orderBy);
-        }
+        // 页码，默认第 1 页
+        long pageNum = pageDomain.getPageNum() == null ? 1L : pageDomain.getPageNum().longValue();
+        // 每页条数，默认 10 条
+        long pageSize = pageDomain.getPageSize() == null ? 10L : pageDomain.getPageSize().longValue();
+        return new Page<T>(pageNum, pageSize);
     }
 
     /**
-     * 清理分页的线程变量
+     * 响应 MyBatis-Plus 分页数据
+     *
+     * @param page MyBatis-Plus 分页结果
+     * @return 分页数据
      */
-    protected void clearPage()
-    {
-        PageUtils.clearPage();
-    }
-
-    /**
-     * 响应请求分页数据
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected TableDataInfo getDataTable(List<?> list)
+    protected TableDataInfo getDataTable(IPage<?> page)
     {
         TableDataInfo rspData = new TableDataInfo();
         rspData.setCode(HttpStatus.SUCCESS);
-        rspData.setRows(list);
+        rspData.setRows(page.getRecords());
         rspData.setMsg("查询成功");
-        rspData.setTotal(new PageInfo(list).getTotal());
+        rspData.setTotal(page.getTotal());
         return rspData;
     }
 

@@ -6,6 +6,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.annotation.Excel.ColumnType;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
@@ -13,11 +17,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * 
  * @author bocloud
  */
+@TableName("biz_resource_alloc")
 public class BizResourceAlloc extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 分配记录ID */
+    @TableId(value = "alloc_id", type = IdType.AUTO)
     @Excel(name = "分配记录ID", cellType = ColumnType.NUMERIC)
     private Long allocId;
 
@@ -89,6 +95,7 @@ public class BizResourceAlloc extends BaseEntity
     private String scheduleMsg;
 
     /** 删除标志（0代表存在 2代表删除） */
+    @TableLogic(value = "0", delval = "2")
     private String delFlag;
 
     /**

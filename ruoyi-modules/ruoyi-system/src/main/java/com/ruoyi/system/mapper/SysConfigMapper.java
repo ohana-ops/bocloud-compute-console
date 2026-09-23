@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.domain.SysConfig;
 
 /**
@@ -8,7 +10,7 @@ import com.ruoyi.system.domain.SysConfig;
  * 
  * @author ruoyi
  */
-public interface SysConfigMapper
+public interface SysConfigMapper extends BaseMapper<SysConfig>
 {
     /**
      * 查询参数配置信息
@@ -27,12 +29,13 @@ public interface SysConfigMapper
     public SysConfig selectConfigById(Long configId);
 
     /**
-     * 查询参数配置列表
+     * 查询参数配置列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param config 参数配置信息
      * @return 参数配置集合
      */
-    public List<SysConfig> selectConfigList(SysConfig config);
+    public IPage<SysConfig> selectConfigList(IPage<SysConfig> page, @Param("config") SysConfig config);
 
     /**
      * 根据键名查询参数配置信息

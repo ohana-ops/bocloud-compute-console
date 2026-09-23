@@ -1,6 +1,10 @@
 package com.ruoyi.system.api.domain;
 
 import java.util.Date;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.annotation.Excel;
 import com.ruoyi.common.core.annotation.Excel.ColumnType;
@@ -11,11 +15,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * 
  * @author ruoyi
  */
+@TableName("sys_oper_log")
 public class SysOperLog extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 日志主键 */
+    @TableId(value = "oper_id", type = IdType.AUTO)
     @Excel(name = "操作序号", cellType = ColumnType.NUMERIC)
     private Long operId;
 
@@ -28,6 +34,7 @@ public class SysOperLog extends BaseEntity
     private Integer businessType;
 
     /** 业务类型数组 */
+    @TableField(exist = false)
     private Integer[] businessTypes;
 
     /** 请求方法 */

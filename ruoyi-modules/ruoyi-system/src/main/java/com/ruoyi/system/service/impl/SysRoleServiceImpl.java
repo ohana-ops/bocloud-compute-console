@@ -8,6 +8,8 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.utils.SpringUtils;
@@ -47,14 +49,15 @@ public class SysRoleServiceImpl implements ISysRoleService
     /**
      * 根据条件分页查询角色数据
      * 
+     * @param page 分页对象
      * @param role 角色信息
      * @return 角色数据集合信息
      */
     @Override
     @DataScope(deptAlias = "d")
-    public List<SysRole> selectRoleList(SysRole role)
+    public IPage<SysRole> selectRoleList(IPage<SysRole> page, SysRole role)
     {
-        return roleMapper.selectRoleList(role);
+        return roleMapper.selectRoleList(page, role);
     }
 
     /**
@@ -111,7 +114,7 @@ public class SysRoleServiceImpl implements ISysRoleService
     @Override
     public List<SysRole> selectRoleAll()
     {
-        return SpringUtils.getAopProxy(this).selectRoleList(new SysRole());
+        return SpringUtils.getAopProxy(this).selectRoleList(new Page<SysRole>(1, -1), new SysRole()).getRecords();
     }
 
     /**
@@ -202,8 +205,8 @@ public class SysRoleServiceImpl implements ISysRoleService
             {
                 SysRole role = new SysRole();
                 role.setRoleId(roleId);
-                List<SysRole> roles = SpringUtils.getAopProxy(this).selectRoleList(role);
-                if (StringUtils.isEmpty(roles))
+                IPage<SysRole> roles = SpringUtils.getAopProxy(this).selectRoleList(new Page<SysRole>(1, -1), role);
+                if (StringUtils.isEmpty(roles.getRecords()))
                 {
                     throw new ServiceException("没有权限访问角色数据！");
                 }

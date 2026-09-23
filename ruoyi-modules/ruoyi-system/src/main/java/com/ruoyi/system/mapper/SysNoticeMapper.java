@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.domain.SysNotice;
 
 /**
@@ -8,7 +10,7 @@ import com.ruoyi.system.domain.SysNotice;
  * 
  * @author ruoyi
  */
-public interface SysNoticeMapper
+public interface SysNoticeMapper extends BaseMapper<SysNotice>
 {
     /**
      * 查询公告信息
@@ -19,12 +21,13 @@ public interface SysNoticeMapper
     public SysNotice selectNoticeById(Long noticeId);
 
     /**
-     * 查询公告列表
+     * 查询公告列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param notice 公告信息
      * @return 公告集合
      */
-    public List<SysNotice> selectNoticeList(SysNotice notice);
+    public IPage<SysNotice> selectNoticeList(IPage<SysNotice> page, @Param("notice") SysNotice notice);
 
     /**
      * 新增公告

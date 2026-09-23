@@ -1,6 +1,7 @@
 package com.ruoyi.system.controller;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -46,9 +49,9 @@ public class SysNoticeController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(SysNotice notice)
     {
-        startPage();
-        List<SysNotice> list = noticeService.selectNoticeList(notice);
-        return getDataTable(list);
+        Page<SysNotice> page = getPage();
+        IPage<SysNotice> result = noticeService.selectNoticeList(page, notice);
+        return getDataTable(result);
     }
 
     /**
@@ -132,9 +135,9 @@ public class SysNoticeController extends BaseController
     @ResponseBody
     public TableDataInfo readUsersList(Long noticeId, String searchValue)
     {
-        startPage();
-        List<?> list = noticeReadService.selectReadUsersByNoticeId(noticeId, searchValue);
-        return getDataTable(list);
+        Page<Map<String, Object>> page = getPage();
+        IPage<Map<String, Object>> result = noticeReadService.selectReadUsersByNoticeId(page, noticeId, searchValue);
+        return getDataTable(result);
     }
 
     /**

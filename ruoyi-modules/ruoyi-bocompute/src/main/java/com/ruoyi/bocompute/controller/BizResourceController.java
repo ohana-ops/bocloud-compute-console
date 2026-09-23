@@ -1,6 +1,8 @@
 package com.ruoyi.bocompute.controller;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -45,9 +47,9 @@ public class BizResourceController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(BizResource bizResource)
     {
-        startPage();
-        List<BizResource> list = bizResourceService.selectBizResourceList(bizResource);
-        return getDataTable(list);
+        Page<BizResource> page = getPage();
+        IPage<BizResource> result = bizResourceService.selectBizResourceList(page, bizResource);
+        return getDataTable(result);
     }
 
     /**
@@ -61,7 +63,7 @@ public class BizResourceController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizResource bizResource)
     {
-        List<BizResource> list = bizResourceService.selectBizResourceList(bizResource);
+        List<BizResource> list = bizResourceService.selectBizResourceList(new Page<BizResource>(1, -1), bizResource).getRecords();
         ExcelUtil<BizResource> util = new ExcelUtil<BizResource>(BizResource.class);
         util.exportExcel(response, list, "算力资源数据");
     }

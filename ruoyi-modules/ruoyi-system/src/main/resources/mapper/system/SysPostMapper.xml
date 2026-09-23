@@ -22,17 +22,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from sys_post
     </sql>
 	
-	<select id="selectPostList" parameterType="SysPost" resultMap="SysPostResult">
+	<select id="selectPostList" resultMap="SysPostResult">
 	    <include refid="selectPostVo"/>
 		<where>
-			<if test="postCode != null and postCode != ''">
-				AND post_code like concat('%', #{postCode}, '%')
+			<if test="post.postCode != null and post.postCode != ''">
+				AND post_code like concat('%', #{post.postCode}, '%')
 			</if>
-			<if test="status != null and status != ''">
-				AND status = #{status}
+			<if test="post.status != null and post.status != ''">
+				AND status = #{post.status}
 			</if>
-			<if test="postName != null and postName != ''">
-				AND post_name like concat('%', #{postName}, '%')
+			<if test="post.postName != null and post.postName != ''">
+				AND post_name like concat('%', #{post.postName}, '%')
 			</if>
 		</where>
 	</select>

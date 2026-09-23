@@ -3,6 +3,7 @@ package com.ruoyi.bocompute.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,15 +67,16 @@ public class BizResourceApplyServiceImpl implements IBizResourceApplyService
     private ComputeScheduler computeScheduler;
 
     /**
-     * 查询资源申请信息集合
+     * 分页查询资源申请信息集合
      * 
+     * @param page 分页参数
      * @param bizResourceApply 资源申请信息
      * @return 资源申请信息集合
      */
     @Override
-    public List<BizResourceApply> selectBizResourceApplyList(BizResourceApply bizResourceApply)
+    public IPage<BizResourceApply> selectBizResourceApplyList(IPage<BizResourceApply> page, BizResourceApply bizResourceApply)
     {
-        return bizResourceApplyMapper.selectBizResourceApplyList(bizResourceApply);
+        return bizResourceApplyMapper.selectBizResourceApplyList(page, bizResourceApply);
     }
 
     /**

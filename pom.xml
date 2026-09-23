@@ -22,8 +22,8 @@
         <spring-cloud-alibaba.version>2025.1.0.0</spring-cloud-alibaba.version>
         <spring-boot-admin.version>4.0.2</spring-boot-admin.version>
         <mybatis-spring-boot.version>4.0.1</mybatis-spring-boot.version>
+        <mybatis-plus.version>3.5.15</mybatis-plus.version>
         <kaptcha.version>2.3.3</kaptcha.version>
-        <pagehelper.boot.version>2.1.0</pagehelper.boot.version>
         <druid.version>1.2.28</druid.version>
         <dynamic-ds.version>4.5.0</dynamic-ds.version>
         <commons.io.version>2.21.0</commons.io.version>
@@ -81,23 +81,24 @@
                 <version>${kaptcha.version}</version>
             </dependency>
 
-            <!-- pagehelper 分页插件 -->
-            <dependency>
-                <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
-                <version>${pagehelper.boot.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>mybatis-spring</artifactId>
-                        <groupId>org.mybatis</groupId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis-spring-boot.version}</version>
+            </dependency>
+
+            <!-- MyBatis-Plus 依赖配置（Spring Boot 4 专用 starter） -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- MyBatis-Plus 分页插件等 JSqlParser 扩展（分页拦截器所在模块） -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
+                <version>${mybatis-plus.version}</version>
             </dependency>
 
             <!-- io常用工具类 -->

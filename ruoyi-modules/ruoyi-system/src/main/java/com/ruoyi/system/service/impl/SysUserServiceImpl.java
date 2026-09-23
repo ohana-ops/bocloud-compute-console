@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.utils.SpringUtils;
@@ -68,40 +70,43 @@ public class SysUserServiceImpl implements ISysUserService
     /**
      * 根据条件分页查询用户列表
      * 
+     * @param page 分页对象
      * @param user 用户信息
      * @return 用户信息集合信息
      */
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectUserList(SysUser user)
+    public IPage<SysUser> selectUserList(IPage<SysUser> page, SysUser user)
     {
-        return userMapper.selectUserList(user);
+        return userMapper.selectUserList(page, user);
     }
 
     /**
      * 根据条件分页查询已分配用户角色列表
      * 
+     * @param page 分页对象
      * @param user 用户信息
      * @return 用户信息集合信息
      */
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectAllocatedList(SysUser user)
+    public IPage<SysUser> selectAllocatedList(IPage<SysUser> page, SysUser user)
     {
-        return userMapper.selectAllocatedList(user);
+        return userMapper.selectAllocatedList(page, user);
     }
 
     /**
      * 根据条件分页查询未分配用户角色列表
      * 
+     * @param page 分页对象
      * @param user 用户信息
      * @return 用户信息集合信息
      */
     @Override
     @DataScope(deptAlias = "d", userAlias = "u")
-    public List<SysUser> selectUnallocatedList(SysUser user)
+    public IPage<SysUser> selectUnallocatedList(IPage<SysUser> page, SysUser user)
     {
-        return userMapper.selectUnallocatedList(user);
+        return userMapper.selectUnallocatedList(page, user);
     }
 
     /**
@@ -242,8 +247,8 @@ public class SysUserServiceImpl implements ISysUserService
         {
             SysUser user = new SysUser();
             user.setUserId(userId);
-            List<SysUser> users = SpringUtils.getAopProxy(this).selectUserList(user);
-            if (StringUtils.isEmpty(users))
+            IPage<SysUser> users = SpringUtils.getAopProxy(this).selectUserList(new Page<SysUser>(1, -1), user);
+            if (StringUtils.isEmpty(users.getRecords()))
             {
                 throw new ServiceException("没有权限访问用户数据！");
             }

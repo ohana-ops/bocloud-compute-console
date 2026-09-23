@@ -39,27 +39,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from biz_resource_alloc
     </sql>
 
-	<select id="selectBizResourceAllocList" parameterType="BizResourceAlloc" resultMap="BizResourceAllocResult">
+	<select id="selectBizResourceAllocList" resultMap="BizResourceAllocResult">
 	    <include refid="selectBizResourceAllocVo"/>
 		<where>
 			del_flag = '0'
-			<if test="applyNo != null and applyNo != ''">
-				AND apply_no like concat('%', #{applyNo}, '%')
+			<if test="bizResourceAlloc.applyNo != null and bizResourceAlloc.applyNo != ''">
+				AND apply_no like concat('%', #{bizResourceAlloc.applyNo}, '%')
 			</if>
-			<if test="resourceName != null and resourceName != ''">
-				AND resource_name like concat('%', #{resourceName}, '%')
+			<if test="bizResourceAlloc.resourceName != null and bizResourceAlloc.resourceName != ''">
+				AND resource_name like concat('%', #{bizResourceAlloc.resourceName}, '%')
 			</if>
-			<if test="resourceId != null">
-				AND resource_id = #{resourceId}
+			<if test="bizResourceAlloc.resourceId != null">
+				AND resource_id = #{bizResourceAlloc.resourceId}
 			</if>
-			<if test="userName != null and userName != ''">
-				AND user_name like concat('%', #{userName}, '%')
+			<if test="bizResourceAlloc.userName != null and bizResourceAlloc.userName != ''">
+				AND user_name like concat('%', #{bizResourceAlloc.userName}, '%')
 			</if>
-			<if test="userId != null">
-				AND user_id = #{userId}
+			<if test="bizResourceAlloc.userId != null">
+				AND user_id = #{bizResourceAlloc.userId}
 			</if>
-			<if test="status != null and status != ''">
-				AND status = #{status}
+			<if test="bizResourceAlloc.status != null and bizResourceAlloc.status != ''">
+				AND status = #{bizResourceAlloc.status}
 			</if>
 		</where>
 		order by alloc_id desc

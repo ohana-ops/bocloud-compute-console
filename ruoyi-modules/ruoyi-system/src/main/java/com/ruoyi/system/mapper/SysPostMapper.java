@@ -1,6 +1,9 @@
 package com.ruoyi.system.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.domain.SysPost;
 
 /**
@@ -8,15 +11,16 @@ import com.ruoyi.system.domain.SysPost;
  * 
  * @author ruoyi
  */
-public interface SysPostMapper
+public interface SysPostMapper extends BaseMapper<SysPost>
 {
     /**
-     * 查询岗位数据集合
+     * 查询岗位数据集合（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param post 岗位信息
      * @return 岗位数据集合
      */
-    public List<SysPost> selectPostList(SysPost post);
+    public IPage<SysPost> selectPostList(IPage<SysPost> page, @Param("post") SysPost post);
 
     /**
      * 查询所有岗位

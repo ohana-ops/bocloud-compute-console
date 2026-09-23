@@ -4,6 +4,10 @@ import java.util.List;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.apache.commons.lang3.ArrayUtils;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.constant.GenConstants;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.web.domain.BaseEntity;
@@ -13,11 +17,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * 
  * @author ruoyi
  */
+@TableName("gen_table")
 public class GenTable extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 编号 */
+    @TableId(value = "table_id", type = IdType.AUTO)
     private Long tableId;
 
     /** 表名称 */
@@ -73,35 +79,44 @@ public class GenTable extends BaseEntity
     /** 生成路径（不填默认项目路径） */
     private String genPath;
 
-    /** 主键信息 */
+    /** 主键信息（非表字段） */
+    @TableField(exist = false)
     private GenTableColumn pkColumn;
 
-    /** 子表信息 */
+    /** 子表信息（非表字段） */
+    @TableField(exist = false)
     private GenTable subTable;
 
-    /** 表列信息 */
+    /** 表列信息（非表字段） */
     @Valid
+    @TableField(exist = false)
     private List<GenTableColumn> columns;
 
     /** 其它生成选项 */
     private String options;
 
-    /** 树编码字段 */
+    /** 树编码字段（非表字段） */
+    @TableField(exist = false)
     private String treeCode;
 
-    /** 树父编码字段 */
+    /** 树父编码字段（非表字段） */
+    @TableField(exist = false)
     private String treeParentCode;
 
-    /** 树名称字段 */
+    /** 树名称字段（非表字段） */
+    @TableField(exist = false)
     private String treeName;
 
-    /** 上级菜单ID字段 */
+    /** 上级菜单ID字段（非表字段） */
+    @TableField(exist = false)
     private Long parentMenuId;
 
-    /** 上级菜单名称字段 */
+    /** 上级菜单名称字段（非表字段） */
+    @TableField(exist = false)
     private String parentMenuName;
 
-    /** 是否生成详情页 */
+    /** 是否生成详情页（非表字段） */
+    @TableField(exist = false)
     private boolean isView;
 
     public Long getTableId()

@@ -2,6 +2,7 @@ package com.ruoyi.system.service;
 
 import java.util.List;
 import java.util.Map;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.domain.SysNotice;
 
 /**
@@ -51,7 +52,7 @@ public interface ISysNoticeReadService
      * @param searchValue 搜索值
      * @return 已读用户列表
      */
-    public List<Map<String, Object>> selectReadUsersByNoticeId(Long noticeId, String searchValue);
+    public IPage<Map<String, Object>> selectReadUsersByNoticeId(IPage<Map<String, Object>> page, Long noticeId, String searchValue);
 
     /**
      * 删除公告时清理对应已读记录

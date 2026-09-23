@@ -1,8 +1,8 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.domain.SysNotice;
 import com.ruoyi.system.mapper.SysNoticeMapper;
 import com.ruoyi.system.service.ISysNoticeService;
@@ -31,15 +31,16 @@ public class SysNoticeServiceImpl implements ISysNoticeService
     }
 
     /**
-     * 查询公告列表
+     * 查询公告列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param notice 公告信息
      * @return 公告集合
      */
     @Override
-    public List<SysNotice> selectNoticeList(SysNotice notice)
+    public IPage<SysNotice> selectNoticeList(IPage<SysNotice> page, SysNotice notice)
     {
-        return noticeMapper.selectNoticeList(notice);
+        return noticeMapper.selectNoticeList(page, notice);
     }
 
     /**

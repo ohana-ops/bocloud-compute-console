@@ -3,6 +3,7 @@ package com.ruoyi.bocompute.mapper;
 import java.util.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ruoyi.bocompute.domain.BizAllocDevice;
 
 /**
@@ -10,7 +11,7 @@ import com.ruoyi.bocompute.domain.BizAllocDevice;
  *
  * @author bocloud
  */
-public interface BizAllocDeviceMapper
+public interface BizAllocDeviceMapper extends BaseMapper<BizAllocDevice>
 {
     /**
      * 通过分配单ID查询绑定的设备列表

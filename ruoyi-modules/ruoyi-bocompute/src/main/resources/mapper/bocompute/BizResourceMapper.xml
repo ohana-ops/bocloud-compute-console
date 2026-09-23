@@ -31,24 +31,24 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from biz_resource
     </sql>
 
-	<select id="selectBizResourceList" parameterType="BizResource" resultMap="BizResourceResult">
+	<select id="selectBizResourceList" resultMap="BizResourceResult">
 	    <include refid="selectBizResourceVo"/>
 		<where>
 			del_flag = '0'
-			<if test="resourceName != null and resourceName != ''">
-				AND resource_name like concat('%', #{resourceName}, '%')
+			<if test="bizResource.resourceName != null and bizResource.resourceName != ''">
+				AND resource_name like concat('%', #{bizResource.resourceName}, '%')
 			</if>
-			<if test="resourceCode != null and resourceCode != ''">
-				AND resource_code like concat('%', #{resourceCode}, '%')
+			<if test="bizResource.resourceCode != null and bizResource.resourceCode != ''">
+				AND resource_code like concat('%', #{bizResource.resourceCode}, '%')
 			</if>
-			<if test="resourceType != null and resourceType != ''">
-				AND resource_type = #{resourceType}
+			<if test="bizResource.resourceType != null and bizResource.resourceType != ''">
+				AND resource_type = #{bizResource.resourceType}
 			</if>
-			<if test="clusterName != null and clusterName != ''">
-				AND cluster_name like concat('%', #{clusterName}, '%')
+			<if test="bizResource.clusterName != null and bizResource.clusterName != ''">
+				AND cluster_name like concat('%', #{bizResource.clusterName}, '%')
 			</if>
-			<if test="status != null and status != ''">
-				AND status = #{status}
+			<if test="bizResource.status != null and bizResource.status != ''">
+				AND status = #{bizResource.status}
 			</if>
 		</where>
 		order by resource_id desc

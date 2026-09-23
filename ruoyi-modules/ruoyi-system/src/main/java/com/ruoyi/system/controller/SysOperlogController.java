@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -37,9 +39,9 @@ public class SysOperlogController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(SysOperLog operLog)
     {
-        startPage();
-        List<SysOperLog> list = operLogService.selectOperLogList(operLog);
-        return getDataTable(list);
+        Page<SysOperLog> page = getPage();
+        IPage<SysOperLog> result = operLogService.selectOperLogList(page, operLog);
+        return getDataTable(result);
     }
 
     @Log(title = "操作日志", businessType = BusinessType.EXPORT)
@@ -47,7 +49,7 @@ public class SysOperlogController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysOperLog operLog)
     {
-        List<SysOperLog> list = operLogService.selectOperLogList(operLog);
+        List<SysOperLog> list = operLogService.selectOperLogList(new Page<SysOperLog>(1, -1), operLog).getRecords();
         ExcelUtil<SysOperLog> util = new ExcelUtil<SysOperLog>(SysOperLog.class);
         util.exportExcel(response, list, "操作日志");
     }

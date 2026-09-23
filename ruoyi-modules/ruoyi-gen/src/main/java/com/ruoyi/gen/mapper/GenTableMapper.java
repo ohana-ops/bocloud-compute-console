@@ -1,6 +1,9 @@
 package com.ruoyi.gen.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.gen.domain.GenTable;
 
 /**
@@ -8,23 +11,25 @@ import com.ruoyi.gen.domain.GenTable;
  * 
  * @author ruoyi
  */
-public interface GenTableMapper
+public interface GenTableMapper extends BaseMapper<GenTable>
 {
     /**
-     * 查询业务列表
+     * 查询业务列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param genTable 业务信息
      * @return 业务集合
      */
-    public List<GenTable> selectGenTableList(GenTable genTable);
+    public IPage<GenTable> selectGenTableList(IPage<GenTable> page, @Param("genTable") GenTable genTable);
 
     /**
-     * 查询据库列表
+     * 查询据库列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param genTable 业务信息
      * @return 数据库表集合
      */
-    public List<GenTable> selectDbTableList(GenTable genTable);
+    public IPage<GenTable> selectDbTableList(IPage<GenTable> page, @Param("genTable") GenTable genTable);
 
     /**
      * 查询据库列表

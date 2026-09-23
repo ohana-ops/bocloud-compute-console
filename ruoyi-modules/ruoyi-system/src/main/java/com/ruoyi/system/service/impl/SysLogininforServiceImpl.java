@@ -1,8 +1,8 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.api.domain.SysLogininfor;
 import com.ruoyi.system.mapper.SysLogininforMapper;
 import com.ruoyi.system.service.ISysLogininforService;
@@ -37,9 +37,9 @@ public class SysLogininforServiceImpl implements ISysLogininforService
      * @return 登录记录集合
      */
     @Override
-    public List<SysLogininfor> selectLogininforList(SysLogininfor logininfor)
+    public IPage<SysLogininfor> selectLogininforList(IPage<SysLogininfor> page, SysLogininfor logininfor)
     {
-        return logininforMapper.selectLogininforList(logininfor);
+        return logininforMapper.selectLogininforList(page, logininfor);
     }
 
     /**

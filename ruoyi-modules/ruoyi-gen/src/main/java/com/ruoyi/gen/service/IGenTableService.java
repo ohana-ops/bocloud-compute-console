@@ -2,6 +2,7 @@ package com.ruoyi.gen.service;
 
 import java.util.List;
 import java.util.Map;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.gen.domain.GenTable;
 
 /**
@@ -12,20 +13,22 @@ import com.ruoyi.gen.domain.GenTable;
 public interface IGenTableService
 {
     /**
-     * 查询业务列表
+     * 查询业务列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param genTable 业务信息
      * @return 业务集合
      */
-    public List<GenTable> selectGenTableList(GenTable genTable);
+    public IPage<GenTable> selectGenTableList(IPage<GenTable> page, GenTable genTable);
 
     /**
-     * 查询据库列表
+     * 查询据库列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param genTable 业务信息
      * @return 数据库表集合
      */
-    public List<GenTable> selectDbTableList(GenTable genTable);
+    public IPage<GenTable> selectDbTableList(IPage<GenTable> page, GenTable genTable);
 
     /**
      * 查询据库列表

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.constant.Constants;
 import com.ruoyi.common.core.exception.job.TaskException;
 import com.ruoyi.common.core.utils.StringUtils;
@@ -47,9 +49,9 @@ public class SysJobController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(SysJob sysJob)
     {
-        startPage();
-        List<SysJob> list = jobService.selectJobList(sysJob);
-        return getDataTable(list);
+        Page<SysJob> page = getPage();
+        IPage<SysJob> result = jobService.selectJobList(page, sysJob);
+        return getDataTable(result);
     }
 
     /**
@@ -60,7 +62,8 @@ public class SysJobController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysJob sysJob)
     {
-        List<SysJob> list = jobService.selectJobList(sysJob);
+        // 分页大小传 -1 表示查询全部，用于导出
+        List<SysJob> list = jobService.selectJobList(new Page<SysJob>(1, -1), sysJob).getRecords();
         ExcelUtil<SysJob> util = new ExcelUtil<SysJob>(SysJob.class);
         util.exportExcel(response, list, "定时任务");
     }

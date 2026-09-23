@@ -1,6 +1,7 @@
 package com.ruoyi.bocompute.service;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.bocompute.domain.BizResourceAlloc;
 
 /**
@@ -16,7 +17,7 @@ public interface IBizResourceAllocService
      * @param bizResourceAlloc 资源分配记录信息
      * @return 资源分配记录列表
      */
-    public List<BizResourceAlloc> selectBizResourceAllocList(BizResourceAlloc bizResourceAlloc);
+    public IPage<BizResourceAlloc> selectBizResourceAllocList(IPage<BizResourceAlloc> page, BizResourceAlloc bizResourceAlloc);
 
     /**
      * 通过分配记录ID查询资源分配记录信息

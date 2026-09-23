@@ -1,8 +1,8 @@
 package com.ruoyi.job.service;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.job.domain.SysJobLog;
 import com.ruoyi.job.mapper.SysJobLogMapper;
 
@@ -18,15 +18,16 @@ public class SysJobLogServiceImpl implements ISysJobLogService
     private SysJobLogMapper jobLogMapper;
 
     /**
-     * 获取quartz调度器日志的计划任务
+     * 获取quartz调度器日志的计划任务（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param jobLog 调度日志信息
      * @return 调度任务日志集合
      */
     @Override
-    public List<SysJobLog> selectJobLogList(SysJobLog jobLog)
+    public IPage<SysJobLog> selectJobLogList(IPage<SysJobLog> page, SysJobLog jobLog)
     {
-        return jobLogMapper.selectJobLogList(jobLog);
+        return jobLogMapper.selectJobLogList(page, jobLog);
     }
 
     /**

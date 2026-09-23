@@ -1,8 +1,8 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.api.domain.SysOperLog;
 import com.ruoyi.system.mapper.SysOperLogMapper;
 import com.ruoyi.system.service.ISysOperLogService;
@@ -37,9 +37,9 @@ public class SysOperLogServiceImpl implements ISysOperLogService
      * @return 操作日志集合
      */
     @Override
-    public List<SysOperLog> selectOperLogList(SysOperLog operLog)
+    public IPage<SysOperLog> selectOperLogList(IPage<SysOperLog> page, SysOperLog operLog)
     {
-        return operLogMapper.selectOperLogList(operLog);
+        return operLogMapper.selectOperLogList(page, operLog);
     }
 
     /**

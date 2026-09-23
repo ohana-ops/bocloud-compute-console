@@ -47,16 +47,17 @@
             <artifactId>transmittable-thread-local</artifactId>
         </dependency>
 
-        <!-- Pagehelper -->
+        <!-- MyBatis-Plus（Spring Boot 4 专用 starter，内部传递引入 mybatis-spring-boot-starter，
+             对原生 MyBatis Mapper 完全兼容） -->
         <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot4-starter</artifactId>
         </dependency>
 
-        <!-- Mybatis Spring -->
+        <!-- MyBatis-Plus 分页插件等 JSqlParser 扩展 -->
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-jsqlparser</artifactId>
         </dependency>
 
         <!-- Hibernate Validator -->

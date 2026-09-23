@@ -1,6 +1,8 @@
 package com.ruoyi.bocompute.service.impl;
 
+import java.util.Date;
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,15 +49,16 @@ public class BizResourceAllocServiceImpl implements IBizResourceAllocService
     private ComputeScheduler computeScheduler;
 
     /**
-     * 查询资源分配记录信息集合
+     * 分页查询资源分配记录信息集合
      * 
+     * @param page 分页参数
      * @param bizResourceAlloc 资源分配记录信息
      * @return 资源分配记录信息集合
      */
     @Override
-    public List<BizResourceAlloc> selectBizResourceAllocList(BizResourceAlloc bizResourceAlloc)
+    public IPage<BizResourceAlloc> selectBizResourceAllocList(IPage<BizResourceAlloc> page, BizResourceAlloc bizResourceAlloc)
     {
-        return bizResourceAllocMapper.selectBizResourceAllocList(bizResourceAlloc);
+        return bizResourceAllocMapper.selectBizResourceAllocList(page, bizResourceAlloc);
     }
 
     /**

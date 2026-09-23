@@ -136,10 +136,9 @@ public class DataScopeAspect
 
         if (StringUtils.isNotBlank(sqlString.toString()))
         {
-            Object params = joinPoint.getArgs()[0];
-            if (StringUtils.isNotNull(params) && params instanceof BaseEntity)
+            BaseEntity baseEntity = findBaseEntity(joinPoint);
+            if (StringUtils.isNotNull(baseEntity))
             {
-                BaseEntity baseEntity = (BaseEntity) params;
                 baseEntity.getParams().put(DATA_SCOPE, " AND (" + sqlString.substring(4) + ")");
             }
         }
@@ -150,11 +149,28 @@ public class DataScopeAspect
      */
     private void clearDataScope(final JoinPoint joinPoint)
     {
-        Object params = joinPoint.getArgs()[0];
-        if (StringUtils.isNotNull(params) && params instanceof BaseEntity)
+        BaseEntity baseEntity = findBaseEntity(joinPoint);
+        if (StringUtils.isNotNull(baseEntity))
         {
-            BaseEntity baseEntity = (BaseEntity) params;
             baseEntity.getParams().put(DATA_SCOPE, "");
         }
+    }
+
+    /**
+     * 从切点入参中查找 BaseEntity 类型的参数对象
+     * 
+     * @param joinPoint 切点
+     * @return BaseEntity 参数对象，若不存在则返回 null
+     */
+    private static BaseEntity findBaseEntity(final JoinPoint joinPoint)
+    {
+        for (Object arg : joinPoint.getArgs())
+        {
+            if (StringUtils.isNotNull(arg) && arg instanceof BaseEntity)
+            {
+                return (BaseEntity) arg;
+            }
+        }
+        return null;
     }
 }

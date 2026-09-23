@@ -3,6 +3,7 @@ package com.ruoyi.system.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.utils.StringUtils;
@@ -26,15 +27,16 @@ public class SysPostServiceImpl implements ISysPostService
     private SysUserPostMapper userPostMapper;
 
     /**
-     * 查询岗位信息集合
+     * 查询岗位信息集合（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param post 岗位信息
      * @return 岗位信息集合
      */
     @Override
-    public List<SysPost> selectPostList(SysPost post)
+    public IPage<SysPost> selectPostList(IPage<SysPost> page, SysPost post)
     {
-        return postMapper.selectPostList(post);
+        return postMapper.selectPostList(page, post);
     }
 
     /**

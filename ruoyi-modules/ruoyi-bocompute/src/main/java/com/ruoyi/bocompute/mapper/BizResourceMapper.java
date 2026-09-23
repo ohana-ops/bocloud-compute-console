@@ -2,6 +2,8 @@ package com.ruoyi.bocompute.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.bocompute.domain.BizResource;
 
 /**
@@ -9,7 +11,7 @@ import com.ruoyi.bocompute.domain.BizResource;
  * 
  * @author bocloud
  */
-public interface BizResourceMapper
+public interface BizResourceMapper extends BaseMapper<BizResource>
 {
     /**
      * 查询算力资源数据集合
@@ -17,7 +19,7 @@ public interface BizResourceMapper
      * @param bizResource 算力资源信息
      * @return 算力资源数据集合
      */
-    public List<BizResource> selectBizResourceList(BizResource bizResource);
+    public IPage<BizResource> selectBizResourceList(IPage<BizResource> page, @Param("bizResource") BizResource bizResource);
 
     /**
      * 查询算力资源列表（仅可用状态下拉选择用）

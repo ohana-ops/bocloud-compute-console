@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -39,9 +41,9 @@ public class SysDictTypeController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(SysDictType dictType)
     {
-        startPage();
-        List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
-        return getDataTable(list);
+        Page<SysDictType> page = getPage();
+        IPage<SysDictType> result = dictTypeService.selectDictTypeList(page, dictType);
+        return getDataTable(result);
     }
 
     @Log(title = "字典类型", businessType = BusinessType.EXPORT)
@@ -49,7 +51,7 @@ public class SysDictTypeController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysDictType dictType)
     {
-        List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
+        List<SysDictType> list = dictTypeService.selectDictTypeList(new Page<SysDictType>(1, -1), dictType).getRecords();
         ExcelUtil<SysDictType> util = new ExcelUtil<SysDictType>(SysDictType.class);
         util.exportExcel(response, list, "字典类型");
     }

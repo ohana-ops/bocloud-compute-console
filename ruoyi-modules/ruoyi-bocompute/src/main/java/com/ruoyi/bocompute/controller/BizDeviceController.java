@@ -1,6 +1,8 @@
 package com.ruoyi.bocompute.controller;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -46,9 +48,9 @@ public class BizDeviceController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(BizDevice bizDevice)
     {
-        startPage();
-        List<BizDevice> list = bizDeviceService.selectBizDeviceList(bizDevice);
-        return getDataTable(list);
+        Page<BizDevice> page = getPage();
+        IPage<BizDevice> result = bizDeviceService.selectBizDeviceList(page, bizDevice);
+        return getDataTable(result);
     }
 
     /**
@@ -62,7 +64,7 @@ public class BizDeviceController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizDevice bizDevice)
     {
-        List<BizDevice> list = bizDeviceService.selectBizDeviceList(bizDevice);
+        List<BizDevice> list = bizDeviceService.selectBizDeviceList(new Page<BizDevice>(1, -1), bizDevice).getRecords();
         ExcelUtil<BizDevice> util = new ExcelUtil<BizDevice>(BizDevice.class);
         util.exportExcel(response, list, "算力设备数据");
     }

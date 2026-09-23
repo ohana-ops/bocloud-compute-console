@@ -1,6 +1,7 @@
 package com.ruoyi.bocompute.service.impl;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.core.constant.UserConstants;
@@ -27,15 +28,16 @@ public class BizResourceServiceImpl implements IBizResourceService
     private BizDeviceMapper bizDeviceMapper;
 
     /**
-     * 查询算力资源信息集合
+     * 分页查询算力资源信息集合
      * 
+     * @param page 分页参数
      * @param bizResource 算力资源信息
      * @return 算力资源信息集合
      */
     @Override
-    public List<BizResource> selectBizResourceList(BizResource bizResource)
+    public IPage<BizResource> selectBizResourceList(IPage<BizResource> page, BizResource bizResource)
     {
-        return bizResourceMapper.selectBizResourceList(bizResource);
+        return bizResourceMapper.selectBizResourceList(page, bizResource);
     }
 
     /**

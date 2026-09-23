@@ -3,6 +3,7 @@ package com.ruoyi.system.mapper;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.domain.SysNotice;
 import com.ruoyi.system.domain.SysNoticeRead;
 
@@ -63,7 +64,7 @@ public interface SysNoticeReadMapper
      * @param searchValue 搜索值
      * @return 已读用户列表
      */
-    public List<Map<String, Object>> selectReadUsersByNoticeId(@Param("noticeId") Long noticeId, @Param("searchValue") String searchValue);
+    public IPage<Map<String, Object>> selectReadUsersByNoticeId(IPage<Map<String, Object>> page, @Param("noticeId") Long noticeId, @Param("searchValue") String searchValue);
 
     /**
      * 公告删除时清理对应已读记录

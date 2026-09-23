@@ -1,6 +1,7 @@
 package com.ruoyi.bocompute.service;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.bocompute.domain.BizResource;
 
 /**
@@ -16,7 +17,7 @@ public interface IBizResourceService
      * @param bizResource 算力资源信息
      * @return 算力资源列表
      */
-    public List<BizResource> selectBizResourceList(BizResource bizResource);
+    public IPage<BizResource> selectBizResourceList(IPage<BizResource> page, BizResource bizResource);
 
     /**
      * 查询所有可用算力资源

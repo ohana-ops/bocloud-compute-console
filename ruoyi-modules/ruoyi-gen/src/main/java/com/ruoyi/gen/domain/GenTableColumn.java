@@ -1,6 +1,9 @@
 package com.ruoyi.gen.domain;
 
 import jakarta.validation.constraints.NotBlank;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.web.domain.BaseEntity;
 
@@ -9,11 +12,13 @@ import com.ruoyi.common.core.web.domain.BaseEntity;
  * 
  * @author ruoyi
  */
+@TableName("gen_table_column")
 public class GenTableColumn extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 编号 */
+    @TableId(value = "column_id", type = IdType.AUTO)
     private Long columnId;
 
     /** 归属表编号 */

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -50,9 +52,9 @@ public class SysRoleController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(SysRole role)
     {
-        startPage();
-        List<SysRole> list = roleService.selectRoleList(role);
-        return getDataTable(list);
+        Page<SysRole> page = getPage();
+        IPage<SysRole> result = roleService.selectRoleList(page, role);
+        return getDataTable(result);
     }
 
     @Log(title = "角色管理", businessType = BusinessType.EXPORT)
@@ -60,7 +62,7 @@ public class SysRoleController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysRole role)
     {
-        List<SysRole> list = roleService.selectRoleList(role);
+        List<SysRole> list = roleService.selectRoleList(new Page<SysRole>(1, -1), role).getRecords();
         ExcelUtil<SysRole> util = new ExcelUtil<SysRole>(SysRole.class);
         util.exportExcel(response, list, "角色数据");
     }
@@ -173,9 +175,9 @@ public class SysRoleController extends BaseController
     @GetMapping("/authUser/allocatedList")
     public TableDataInfo allocatedList(SysUser user)
     {
-        startPage();
-        List<SysUser> list = userService.selectAllocatedList(user);
-        return getDataTable(list);
+        Page<SysUser> page = getPage();
+        IPage<SysUser> result = userService.selectAllocatedList(page, user);
+        return getDataTable(result);
     }
 
     /**
@@ -185,9 +187,9 @@ public class SysRoleController extends BaseController
     @GetMapping("/authUser/unallocatedList")
     public TableDataInfo unallocatedList(SysUser user)
     {
-        startPage();
-        List<SysUser> list = userService.selectUnallocatedList(user);
-        return getDataTable(list);
+        Page<SysUser> page = getPage();
+        IPage<SysUser> result = userService.selectUnallocatedList(page, user);
+        return getDataTable(result);
     }
 
     /**

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.constant.CacheConstants;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
@@ -42,9 +44,9 @@ public class SysLogininforController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(SysLogininfor logininfor)
     {
-        startPage();
-        List<SysLogininfor> list = logininforService.selectLogininforList(logininfor);
-        return getDataTable(list);
+        Page<SysLogininfor> page = getPage();
+        IPage<SysLogininfor> result = logininforService.selectLogininforList(page, logininfor);
+        return getDataTable(result);
     }
 
     @Log(title = "登录日志", businessType = BusinessType.EXPORT)
@@ -52,7 +54,7 @@ public class SysLogininforController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysLogininfor logininfor)
     {
-        List<SysLogininfor> list = logininforService.selectLogininforList(logininfor);
+        List<SysLogininfor> list = logininforService.selectLogininforList(new Page<SysLogininfor>(1, -1), logininfor).getRecords();
         ExcelUtil<SysLogininfor> util = new ExcelUtil<SysLogininfor>(SysLogininfor.class);
         util.exportExcel(response, list, "登录日志");
     }

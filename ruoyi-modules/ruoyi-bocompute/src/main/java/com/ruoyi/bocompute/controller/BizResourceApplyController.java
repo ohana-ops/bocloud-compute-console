@@ -1,6 +1,8 @@
 package com.ruoyi.bocompute.controller;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -45,11 +47,11 @@ public class BizResourceApplyController extends BaseController
     @GetMapping("/myList")
     public TableDataInfo myList(BizResourceApply bizResourceApply)
     {
-        startPage();
+        Page<BizResourceApply> page = getPage();
         // 限定只查询当前登录人自己的申请单
         bizResourceApply.setApplyUserId(SecurityUtils.getUserId());
-        List<BizResourceApply> list = bizResourceApplyService.selectBizResourceApplyList(bizResourceApply);
-        return getDataTable(list);
+        IPage<BizResourceApply> result = bizResourceApplyService.selectBizResourceApplyList(page, bizResourceApply);
+        return getDataTable(result);
     }
 
     /**
@@ -62,9 +64,9 @@ public class BizResourceApplyController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(BizResourceApply bizResourceApply)
     {
-        startPage();
-        List<BizResourceApply> list = bizResourceApplyService.selectBizResourceApplyList(bizResourceApply);
-        return getDataTable(list);
+        Page<BizResourceApply> page = getPage();
+        IPage<BizResourceApply> result = bizResourceApplyService.selectBizResourceApplyList(page, bizResourceApply);
+        return getDataTable(result);
     }
 
     /**
@@ -78,7 +80,7 @@ public class BizResourceApplyController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizResourceApply bizResourceApply)
     {
-        List<BizResourceApply> list = bizResourceApplyService.selectBizResourceApplyList(bizResourceApply);
+        List<BizResourceApply> list = bizResourceApplyService.selectBizResourceApplyList(new Page<BizResourceApply>(1, -1), bizResourceApply).getRecords();
         ExcelUtil<BizResourceApply> util = new ExcelUtil<BizResourceApply>(BizResourceApply.class);
         util.exportExcel(response, list, "资源申请数据");
     }

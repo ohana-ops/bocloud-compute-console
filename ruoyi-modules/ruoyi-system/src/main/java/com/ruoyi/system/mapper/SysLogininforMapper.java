@@ -1,6 +1,8 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.api.domain.SysLogininfor;
 
 /**
@@ -8,7 +10,7 @@ import com.ruoyi.system.api.domain.SysLogininfor;
  * 
  * @author ruoyi
  */
-public interface SysLogininforMapper
+public interface SysLogininforMapper extends BaseMapper<SysLogininfor>
 {
     /**
      * 新增系统登录日志
@@ -23,7 +25,7 @@ public interface SysLogininforMapper
      * @param logininfor 访问日志对象
      * @return 登录记录集合
      */
-    public List<SysLogininfor> selectLogininforList(SysLogininfor logininfor);
+    public IPage<SysLogininfor> selectLogininforList(IPage<SysLogininfor> page, @Param("logininfor") SysLogininfor logininfor);
 
     /**
      * 批量删除系统登录日志

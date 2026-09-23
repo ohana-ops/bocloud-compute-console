@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.common.core.constant.Constants;
 import com.ruoyi.common.core.constant.GenConstants;
 import com.ruoyi.common.core.exception.ServiceException;
@@ -70,27 +71,29 @@ public class GenTableServiceImpl implements IGenTableService
     }
 
     /**
-     * 查询业务列表
+     * 查询业务列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param genTable 业务信息
      * @return 业务集合
      */
     @Override
-    public List<GenTable> selectGenTableList(GenTable genTable)
+    public IPage<GenTable> selectGenTableList(IPage<GenTable> page, GenTable genTable)
     {
-        return genTableMapper.selectGenTableList(genTable);
+        return genTableMapper.selectGenTableList(page, genTable);
     }
 
     /**
-     * 查询据库列表
+     * 查询据库列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param genTable 业务信息
      * @return 数据库表集合
      */
     @Override
-    public List<GenTable> selectDbTableList(GenTable genTable)
+    public IPage<GenTable> selectDbTableList(IPage<GenTable> page, GenTable genTable)
     {
-        return genTableMapper.selectDbTableList(genTable);
+        return genTableMapper.selectDbTableList(page, genTable);
     }
 
     /**

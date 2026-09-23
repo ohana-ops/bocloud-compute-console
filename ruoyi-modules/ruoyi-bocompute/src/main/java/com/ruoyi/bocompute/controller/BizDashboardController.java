@@ -3,6 +3,7 @@ package com.ruoyi.bocompute.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +43,7 @@ public class BizDashboardController extends BaseController
     public AjaxResult statistics()
     {
         // 查询全部资源，用于汇总总数
-        List<BizResource> resourceList = bizResourceService.selectBizResourceList(new BizResource());
+        List<BizResource> resourceList = bizResourceService.selectBizResourceList(new Page<BizResource>(1, -1), new BizResource()).getRecords();
         // 资源总数量累加
         int totalCount = 0;
         // 已分配数量累加

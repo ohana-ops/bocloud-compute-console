@@ -9,6 +9,7 @@ import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.common.core.constant.ScheduleConstants;
 import com.ruoyi.common.core.exception.job.TaskException;
 import com.ruoyi.job.domain.SysJob;
@@ -45,15 +46,16 @@ public class SysJobServiceImpl implements ISysJobService
     }
 
     /**
-     * 获取quartz调度器的计划任务列表
+     * 获取quartz调度器的计划任务列表（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param job 调度信息
-     * @return
+     * @return 调度任务集合
      */
     @Override
-    public List<SysJob> selectJobList(SysJob job)
+    public IPage<SysJob> selectJobList(IPage<SysJob> page, SysJob job)
     {
-        return jobMapper.selectJobList(job);
+        return jobMapper.selectJobList(page, job);
     }
 
     /**

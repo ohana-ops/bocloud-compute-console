@@ -1,6 +1,7 @@
 package com.ruoyi.system.service;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.domain.SysPost;
 
 /**
@@ -11,12 +12,13 @@ import com.ruoyi.system.domain.SysPost;
 public interface ISysPostService
 {
     /**
-     * 查询岗位信息集合
+     * 查询岗位信息集合（MyBatis-Plus 分页）
      * 
+     * @param page 分页对象
      * @param post 岗位信息
      * @return 岗位列表
      */
-    public List<SysPost> selectPostList(SysPost post);
+    public IPage<SysPost> selectPostList(IPage<SysPost> page, SysPost post);
 
     /**
      * 查询所有岗位

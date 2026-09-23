@@ -1,6 +1,7 @@
 package com.ruoyi.bocompute.service;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.bocompute.domain.BizResourceApply;
 
 /**
@@ -16,7 +17,7 @@ public interface IBizResourceApplyService
      * @param bizResourceApply 资源申请信息
      * @return 资源申请列表
      */
-    public List<BizResourceApply> selectBizResourceApplyList(BizResourceApply bizResourceApply);
+    public IPage<BizResourceApply> selectBizResourceApplyList(IPage<BizResourceApply> page, BizResourceApply bizResourceApply);
 
     /**
      * 通过申请单ID查询资源申请信息

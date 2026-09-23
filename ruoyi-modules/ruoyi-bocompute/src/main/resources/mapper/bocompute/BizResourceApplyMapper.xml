@@ -38,27 +38,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from biz_resource_apply
     </sql>
 
-	<select id="selectBizResourceApplyList" parameterType="BizResourceApply" resultMap="BizResourceApplyResult">
+	<select id="selectBizResourceApplyList" resultMap="BizResourceApplyResult">
 	    <include refid="selectBizResourceApplyVo"/>
 		<where>
 			del_flag = '0'
-			<if test="applyNo != null and applyNo != ''">
-				AND apply_no like concat('%', #{applyNo}, '%')
+			<if test="bizResourceApply.applyNo != null and bizResourceApply.applyNo != ''">
+				AND apply_no like concat('%', #{bizResourceApply.applyNo}, '%')
 			</if>
-			<if test="resourceName != null and resourceName != ''">
-				AND resource_name like concat('%', #{resourceName}, '%')
+			<if test="bizResourceApply.resourceName != null and bizResourceApply.resourceName != ''">
+				AND resource_name like concat('%', #{bizResourceApply.resourceName}, '%')
 			</if>
-			<if test="resourceType != null and resourceType != ''">
-				AND resource_type = #{resourceType}
+			<if test="bizResourceApply.resourceType != null and bizResourceApply.resourceType != ''">
+				AND resource_type = #{bizResourceApply.resourceType}
 			</if>
-			<if test="applyUserName != null and applyUserName != ''">
-				AND apply_user_name like concat('%', #{applyUserName}, '%')
+			<if test="bizResourceApply.applyUserName != null and bizResourceApply.applyUserName != ''">
+				AND apply_user_name like concat('%', #{bizResourceApply.applyUserName}, '%')
 			</if>
-			<if test="applyUserId != null">
-				AND apply_user_id = #{applyUserId}
+			<if test="bizResourceApply.applyUserId != null">
+				AND apply_user_id = #{bizResourceApply.applyUserId}
 			</if>
-			<if test="status != null and status != ''">
-				AND status = #{status}
+			<if test="bizResourceApply.status != null and bizResourceApply.status != ''">
+				AND status = #{bizResourceApply.status}
 			</if>
 		</where>
 		order by apply_id desc

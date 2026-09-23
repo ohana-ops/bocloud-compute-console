@@ -38,23 +38,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="sqlwhereSearch"/>
     </select>
     
-    <select id="selectConfigList" parameterType="SysConfig" resultMap="SysConfigResult">
+    <select id="selectConfigList" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
         <where>
-			<if test="configName != null and configName != ''">
-				AND config_name like concat('%', #{configName}, '%')
+			<if test="config.configName != null and config.configName != ''">
+				AND config_name like concat('%', #{config.configName}, '%')
 			</if>
-			<if test="configType != null and configType != ''">
-				AND config_type = #{configType}
+			<if test="config.configType != null and config.configType != ''">
+				AND config_type = #{config.configType}
 			</if>
-			<if test="configKey != null and configKey != ''">
-				AND config_key like concat('%', #{configKey}, '%')
+			<if test="config.configKey != null and config.configKey != ''">
+				AND config_key like concat('%', #{config.configKey}, '%')
 			</if>
-			<if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
-				and date_format(create_time,'%Y%m%d') &gt;= date_format(#{params.beginTime},'%Y%m%d')
+			<if test="config.params.beginTime != null and config.params.beginTime != ''"><!-- 开始时间检索 -->
+				and date_format(create_time,'%Y%m%d') &gt;= date_format(#{config.params.beginTime},'%Y%m%d')
 			</if>
-			<if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
-				and date_format(create_time,'%Y%m%d') &lt;= date_format(#{params.endTime},'%Y%m%d')
+			<if test="config.params.endTime != null and config.params.endTime != ''"><!-- 结束时间检索 -->
+				and date_format(create_time,'%Y%m%d') &lt;= date_format(#{config.params.endTime},'%Y%m%d')
 			</if>
 		</where>
     </select>

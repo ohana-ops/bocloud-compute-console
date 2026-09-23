@@ -1,6 +1,8 @@
 package com.ruoyi.bocompute.controller;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,9 +45,9 @@ public class BizResourceAllocController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(BizResourceAlloc bizResourceAlloc)
     {
-        startPage();
-        List<BizResourceAlloc> list = bizResourceAllocService.selectBizResourceAllocList(bizResourceAlloc);
-        return getDataTable(list);
+        Page<BizResourceAlloc> page = getPage();
+        IPage<BizResourceAlloc> result = bizResourceAllocService.selectBizResourceAllocList(page, bizResourceAlloc);
+        return getDataTable(result);
     }
 
     /**
@@ -57,11 +59,11 @@ public class BizResourceAllocController extends BaseController
     @GetMapping("/myList")
     public TableDataInfo myList(BizResourceAlloc bizResourceAlloc)
     {
-        startPage();
+        Page<BizResourceAlloc> page = getPage();
         // 限定只查询当前登录人自己的分配记录
         bizResourceAlloc.setUserId(SecurityUtils.getUserId());
-        List<BizResourceAlloc> list = bizResourceAllocService.selectBizResourceAllocList(bizResourceAlloc);
-        return getDataTable(list);
+        IPage<BizResourceAlloc> result = bizResourceAllocService.selectBizResourceAllocList(page, bizResourceAlloc);
+        return getDataTable(result);
     }
 
     /**
@@ -75,7 +77,7 @@ public class BizResourceAllocController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, BizResourceAlloc bizResourceAlloc)
     {
-        List<BizResourceAlloc> list = bizResourceAllocService.selectBizResourceAllocList(bizResourceAlloc);
+        List<BizResourceAlloc> list = bizResourceAllocService.selectBizResourceAllocList(new Page<BizResourceAlloc>(1, -1), bizResourceAlloc).getRecords();
         ExcelUtil<BizResourceAlloc> util = new ExcelUtil<BizResourceAlloc>(BizResourceAlloc.class);
         util.exportExcel(response, list, "资源分配数据");
     }

@@ -2,6 +2,8 @@ package com.ruoyi.bocompute.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.bocompute.domain.BizDevice;
 
 /**
@@ -9,7 +11,7 @@ import com.ruoyi.bocompute.domain.BizDevice;
  *
  * @author bocloud
  */
-public interface BizDeviceMapper
+public interface BizDeviceMapper extends BaseMapper<BizDevice>
 {
     /**
      * 查询模拟算力设备数据集合
@@ -17,7 +19,7 @@ public interface BizDeviceMapper
      * @param bizDevice 模拟算力设备信息
      * @return 模拟算力设备数据集合
      */
-    public List<BizDevice> selectBizDeviceList(BizDevice bizDevice);
+    public IPage<BizDevice> selectBizDeviceList(IPage<BizDevice> page, @Param("bizDevice") BizDevice bizDevice);
 
     /**
      * 通过设备ID查询模拟算力设备信息

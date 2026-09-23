@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -42,9 +44,9 @@ public class SysPostController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(SysPost post)
     {
-        startPage();
-        List<SysPost> list = postService.selectPostList(post);
-        return getDataTable(list);
+        Page<SysPost> page = getPage();
+        IPage<SysPost> result = postService.selectPostList(page, post);
+        return getDataTable(result);
     }
 
     @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
@@ -52,7 +54,7 @@ public class SysPostController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysPost post)
     {
-        List<SysPost> list = postService.selectPostList(post);
+        List<SysPost> list = postService.selectPostList(new Page<SysPost>(1, -1), post).getRecords();
         ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
         util.exportExcel(response, list, "岗位数据");
     }

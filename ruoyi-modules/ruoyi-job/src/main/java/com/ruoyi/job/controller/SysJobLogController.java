@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.core.web.domain.AjaxResult;
@@ -38,9 +40,9 @@ public class SysJobLogController extends BaseController
     @GetMapping("/list")
     public TableDataInfo list(SysJobLog sysJobLog)
     {
-        startPage();
-        List<SysJobLog> list = jobLogService.selectJobLogList(sysJobLog);
-        return getDataTable(list);
+        Page<SysJobLog> page = getPage();
+        IPage<SysJobLog> result = jobLogService.selectJobLogList(page, sysJobLog);
+        return getDataTable(result);
     }
 
     /**
@@ -51,7 +53,8 @@ public class SysJobLogController extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysJobLog sysJobLog)
     {
-        List<SysJobLog> list = jobLogService.selectJobLogList(sysJobLog);
+        // 分页大小传 -1 表示查询全部，用于导出
+        List<SysJobLog> list = jobLogService.selectJobLogList(new Page<SysJobLog>(1, -1), sysJobLog).getRecords();
         ExcelUtil<SysJobLog> util = new ExcelUtil<SysJobLog>(SysJobLog.class);
         util.exportExcel(response, list, "调度日志");
     }

@@ -3,6 +3,7 @@ package com.ruoyi.system.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.common.security.utils.DictUtils;
 import com.ruoyi.system.api.domain.SysDictData;
 import com.ruoyi.system.mapper.SysDictDataMapper;
@@ -26,9 +27,9 @@ public class SysDictDataServiceImpl implements ISysDictDataService
      * @return 字典数据集合信息
      */
     @Override
-    public List<SysDictData> selectDictDataList(SysDictData dictData)
+    public IPage<SysDictData> selectDictDataList(IPage<SysDictData> page, SysDictData dictData)
     {
-        return dictDataMapper.selectDictDataList(dictData);
+        return dictDataMapper.selectDictDataList(page, dictData);
     }
 
     /**

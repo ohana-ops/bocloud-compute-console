@@ -2,6 +2,7 @@ package com.ruoyi.bocompute.service;
 
 import java.util.List;
 import java.util.Map;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.bocompute.domain.BizAllocDevice;
 import com.ruoyi.bocompute.domain.BizDevice;
 
@@ -18,7 +19,7 @@ public interface IBizDeviceService
      * @param bizDevice 模拟算力设备信息
      * @return 模拟算力设备信息集合
      */
-    public List<BizDevice> selectBizDeviceList(BizDevice bizDevice);
+    public IPage<BizDevice> selectBizDeviceList(IPage<BizDevice> page, BizDevice bizDevice);
 
     /**
      * 通过设备ID查询模拟算力设备信息

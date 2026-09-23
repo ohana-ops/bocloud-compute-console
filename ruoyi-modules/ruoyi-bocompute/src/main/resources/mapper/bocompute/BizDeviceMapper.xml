@@ -38,30 +38,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		left join biz_resource r on r.resource_id = d.resource_id
     </sql>
 
-	<select id="selectBizDeviceList" parameterType="BizDevice" resultMap="BizDeviceResult">
+	<select id="selectBizDeviceList" resultMap="BizDeviceResult">
 	    <include refid="selectBizDeviceVo"/>
 		<where>
 			d.del_flag = '0'
-			<if test="deviceCode != null and deviceCode != ''">
-				AND d.device_code like concat('%', #{deviceCode}, '%')
+			<if test="bizDevice.deviceCode != null and bizDevice.deviceCode != ''">
+				AND d.device_code like concat('%', #{bizDevice.deviceCode}, '%')
 			</if>
-			<if test="resourceId != null">
-				AND d.resource_id = #{resourceId}
+			<if test="bizDevice.resourceId != null">
+				AND d.resource_id = #{bizDevice.resourceId}
 			</if>
-			<if test="resourceType != null and resourceType != ''">
-				AND d.resource_type = #{resourceType}
+			<if test="bizDevice.resourceType != null and bizDevice.resourceType != ''">
+				AND d.resource_type = #{bizDevice.resourceType}
 			</if>
-			<if test="nodeName != null and nodeName != ''">
-				AND d.node_name like concat('%', #{nodeName}, '%')
+			<if test="bizDevice.nodeName != null and bizDevice.nodeName != ''">
+				AND d.node_name like concat('%', #{bizDevice.nodeName}, '%')
 			</if>
-			<if test="status != null and status != ''">
-				AND d.status = #{status}
+			<if test="bizDevice.status != null and bizDevice.status != ''">
+				AND d.status = #{bizDevice.status}
 			</if>
-			<if test="userName != null and userName != ''">
-				AND d.user_name like concat('%', #{userName}, '%')
+			<if test="bizDevice.userName != null and bizDevice.userName != ''">
+				AND d.user_name like concat('%', #{bizDevice.userName}, '%')
 			</if>
-			<if test="applyNo != null and applyNo != ''">
-				AND d.apply_no like concat('%', #{applyNo}, '%')
+			<if test="bizDevice.applyNo != null and bizDevice.applyNo != ''">
+				AND d.apply_no like concat('%', #{bizDevice.applyNo}, '%')
 			</if>
 		</where>
 		order by d.device_id asc

@@ -3,6 +3,7 @@ package com.ruoyi.bocompute.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,15 +42,16 @@ public class BizDeviceServiceImpl implements IBizDeviceService
     private BizResourceMapper bizResourceMapper;
 
     /**
-     * 查询模拟算力设备信息集合
+     * 分页查询模拟算力设备信息集合
      *
+     * @param page 分页参数
      * @param bizDevice 模拟算力设备信息
      * @return 模拟算力设备信息集合
      */
     @Override
-    public List<BizDevice> selectBizDeviceList(BizDevice bizDevice)
+    public IPage<BizDevice> selectBizDeviceList(IPage<BizDevice> page, BizDevice bizDevice)
     {
-        return bizDeviceMapper.selectBizDeviceList(bizDevice);
+        return bizDeviceMapper.selectBizDeviceList(page, bizDevice);
     }
 
     /**

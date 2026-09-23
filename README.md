@@ -20,7 +20,7 @@
 | 认证授权 | Spring Security + Redis Token | - |
 | ORM | MyBatis | 4.0.1 |
 | 数据库连接池 | Druid | 1.2.28 |
-| 分页 | PageHelper | 2.1.0 |
+| 分页 | MyBatis-Plus (IPage) | 3.5.15 |
 | 缓存 | Redis | - |
 | 前端框架 | Vue | 2.6.12 |
 | UI 组件库 | Element UI | 2.15.14 |

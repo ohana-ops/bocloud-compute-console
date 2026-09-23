@@ -1,6 +1,8 @@
 package ${packageName}.controller;
 
 import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,14 +47,14 @@ public class ${ClassName}Controller extends BaseController
 #if($table.crud || $table.sub)
     public TableDataInfo list(${ClassName} ${className})
     {
-        startPage();
-        List<${ClassName}> list = ${className}Service.select${ClassName}List(${className});
-        return getDataTable(list);
+        Page<${ClassName}> page = getPage();
+        IPage<${ClassName}> result = ${className}Service.select${ClassName}List(page, ${className});
+        return getDataTable(result);
     }
 #elseif($table.tree)
     public AjaxResult list(${ClassName} ${className})
     {
-        List<${ClassName}> list = ${className}Service.select${ClassName}List(${className});
+        List<${ClassName}> list = ${className}Service.select${ClassName}List(new Page<${ClassName}>(1, -1), ${className}).getRecords();
         return success(list);
     }
 #end
@@ -65,7 +67,7 @@ public class ${ClassName}Controller extends BaseController
     @PostMapping("/export")
     public void export(HttpServletResponse response, ${ClassName} ${className})
     {
-        List<${ClassName}> list = ${className}Service.select${ClassName}List(${className});
+        List<${ClassName}> list = ${className}Service.select${ClassName}List(new Page<${ClassName}>(1, -1), ${className}).getRecords();
         ExcelUtil<${ClassName}> util = new ExcelUtil<${ClassName}>(${ClassName}.class);
         util.exportExcel(response, list, "${functionName}数据");
     }

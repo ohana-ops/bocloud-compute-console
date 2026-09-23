@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.core.constant.CacheConstants;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.web.controller.BaseController;
@@ -66,7 +67,31 @@ public class SysUserOnlineController extends BaseController
         }
         Collections.reverse(userOnlineList);
         userOnlineList.removeAll(Collections.singleton(null));
-        return getDataTable(userOnlineList);
+        return getDataTable(buildPage(userOnlineList));
+    }
+
+    /**
+     * 内存分页：将 Redis 取出的全量在线用户列表按请求分页参数切片
+     *
+     * @param list 全量在线用户列表
+     * @return MyBatis-Plus 分页对象
+     */
+    private <T> Page<T> buildPage(List<T> list)
+    {
+        Page<T> page = getPage();
+        long total = list.size();
+        long fromIndex = Math.min((page.getCurrent() - 1) * page.getSize(), total);
+        long toIndex = Math.min(fromIndex + page.getSize(), total);
+        if (fromIndex >= total)
+        {
+            page.setRecords(new ArrayList<>());
+        }
+        else
+        {
+            page.setRecords(list.subList((int) fromIndex, (int) toIndex));
+        }
+        page.setTotal(total);
+        return page;
     }
 
     /**

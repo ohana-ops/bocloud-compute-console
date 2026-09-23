@@ -1,6 +1,9 @@
 package com.ruoyi.bocompute.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.bocompute.domain.BizResourceAlloc;
 
 /**
@@ -8,7 +11,7 @@ import com.ruoyi.bocompute.domain.BizResourceAlloc;
  * 
  * @author bocloud
  */
-public interface BizResourceAllocMapper
+public interface BizResourceAllocMapper extends BaseMapper<BizResourceAlloc>
 {
     /**
      * 查询资源分配记录数据集合
@@ -16,7 +19,7 @@ public interface BizResourceAllocMapper
      * @param bizResourceAlloc 资源分配记录信息
      * @return 资源分配记录数据集合
      */
-    public List<BizResourceAlloc> selectBizResourceAllocList(BizResourceAlloc bizResourceAlloc);
+    public IPage<BizResourceAlloc> selectBizResourceAllocList(IPage<BizResourceAlloc> page, @Param("bizResourceAlloc") BizResourceAlloc bizResourceAlloc);
 
     /**
      * 通过分配记录ID查询资源分配记录信息

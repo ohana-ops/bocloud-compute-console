@@ -1,6 +1,6 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ruoyi.system.api.domain.SysDictData;
 
 /**
@@ -16,7 +16,7 @@ public interface ISysDictDataService
      * @param dictData 字典数据信息
      * @return 字典数据集合信息
      */
-    public List<SysDictData> selectDictDataList(SysDictData dictData);
+    public IPage<SysDictData> selectDictDataList(IPage<SysDictData> page, SysDictData dictData);
 
     /**
      * 根据字典类型和字典键值查询字典数据信息
