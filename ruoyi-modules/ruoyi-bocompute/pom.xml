@@ -77,6 +77,12 @@
             <artifactId>ruoyi-api-system</artifactId>
         </dependency>
 
+        <!-- fabric8 Kubernetes 客户端（K8s 调度器：节点 GPU 查询 / Pod 创建与删除） -->
+        <dependency>
+            <groupId>io.fabric8</groupId>
+            <artifactId>kubernetes-client</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

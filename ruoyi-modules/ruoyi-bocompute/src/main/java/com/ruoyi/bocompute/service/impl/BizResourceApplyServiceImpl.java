@@ -274,7 +274,7 @@ public class BizResourceApplyServiceImpl implements IBizResourceApplyService
         alloc.setCreateBy(SecurityUtils.getUsername());
         alloc.setCreateTime(DateUtils.getNowDate());
         bizResourceAllocMapper.insertBizResourceAlloc(alloc);
-        // 3、调度选卡并锁定设备（无空闲设备、并发抢占、K8s 未接入都会在这里抛异常回滚）
+        // 3、调度选卡并锁定设备（空闲设备不足、并发抢占、K8s 创建 Pod 失败都会在这里抛异常回滚）
         ScheduleRequest request = new ScheduleRequest();
         request.setApplyId(applyId);
         request.setApplyNo(apply.getApplyNo());

@@ -34,6 +34,8 @@
         <poi.version>4.1.2</poi.version>
         <springdoc.version>3.0.2</springdoc.version>
         <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
+        <!-- fabric8 Kubernetes Java 客户端（K8s 调度器接入用） -->
+        <fabric8.version>6.13.4</fabric8.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -211,6 +213,13 @@
                 <groupId>com.ruoyi</groupId>
                 <artifactId>ruoyi-api-system</artifactId>
                 <version>${ruoyi.version}</version>
+            </dependency>
+
+            <!-- fabric8 Kubernetes 客户端（用于 K8sComputeScheduler 真实调度链路） -->
+            <dependency>
+                <groupId>io.fabric8</groupId>
+                <artifactId>kubernetes-client</artifactId>
+                <version>${fabric8.version}</version>
             </dependency>
 
         </dependencies>

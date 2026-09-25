@@ -4,7 +4,7 @@ package com.ruoyi.bocompute.schedule;
  * 算力调度器接口
  * 
  * 只做「选设备、锁设备、还设备」三件事，库存回写与申请单状态由调用方在同一事务内处理。
- * 当前有设备池实现（DevicePoolScheduler）与 K8s 预留实现（K8sComputeScheduler）两个实现，
+ * 当前有设备池实现（DevicePoolScheduler）与 K8s 实现（K8sComputeScheduler，fabric8 接入真实集群）两个实现，
  * 通过配置项 bocompute.scheduler.type 切换。
  *
  * @author bocloud

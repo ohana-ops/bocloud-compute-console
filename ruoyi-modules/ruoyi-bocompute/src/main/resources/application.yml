@@ -5,7 +5,13 @@
 # 算力调度业务配置
 bocompute:
   scheduler:
-    # 调度器实现：device-pool 设备池（默认） / k8s 预留实现
+    # 调度器实现：
+    #   device-pool 设备池（默认，自建设备表调度，无需外部依赖）
+    #   k8s        K8s 真实调度（fabric8 接入：查节点 GPU → 建 Pod → 按 label 删 Pod）
+    # 注意：k8s 模式需要有真实可访问的 K8s 集群，且 GPU 节点已部署 NVIDIA Device Plugin
+    #      （节点 status.allocatable 中能查到 nvidia.com/gpu），并准备好 kubeconfig
+    #      （配置项 bocompute.scheduler.k8s.kubeconfig > 环境变量 KUBECONFIG > ~/.kube/config），
+    #      否则审批通过时会因连不上集群而整单回滚。无真实集群环境请勿启用。
     type: device-pool
     # 到期分配单自动释放开关
     auto-release-enabled: true
